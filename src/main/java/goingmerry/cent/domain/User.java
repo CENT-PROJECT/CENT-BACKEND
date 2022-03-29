@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -25,15 +26,14 @@ public class User {
 
     private String socialId;
 
-    private String socialType;
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Builder
-    public User(String userName, String email, String socialId, String socialType, Role role) {
-        this.userName = userName;
-        this.email = email;
+    public User(String socialId, SocialType socialType, Role role) {
         this.socialId = socialId;
         this.socialType = socialType;
         this.role = role;

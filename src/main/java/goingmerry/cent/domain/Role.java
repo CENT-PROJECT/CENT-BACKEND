@@ -1,10 +1,10 @@
 package goingmerry.cent.domain;
 
 public enum Role {
+
     USER("ROLE_USER"),
     GUEST("ROLE_GUEST"),
     ADMIN("ROLE_ADMIN");
-
 
     private String grantedAuthority;
 
@@ -16,3 +16,4 @@ public enum Role {
         return grantedAuthority;
     }
 }
+

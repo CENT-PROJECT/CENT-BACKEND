@@ -1,4 +1,4 @@
-package goingmerry.cent;
+package goingmerry.cent.oauth;
 
 import goingmerry.cent.domain.User;
 import lombok.Data;
