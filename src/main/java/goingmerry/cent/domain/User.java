@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class User {
+public class User extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,15 @@ public class User {
 
     private boolean isExpert;
 
-    private String socialId;
+    private String gender;
+
+    private String ageRange;
+
+    private String birth;
+
+    private String userImage;
+
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
@@ -33,8 +41,8 @@ public class User {
     private Role role;
 
     @Builder
-    public User(String socialId, SocialType socialType, Role role) {
-        this.socialId = socialId;
+    public User(String userId, SocialType socialType, Role role) {
+        this.userId = userId;
         this.socialType = socialType;
         this.role = role;
     }

@@ -3,6 +3,7 @@ package goingmerry.cent.oauth;
 import goingmerry.cent.domain.SocialType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,40 +14,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
+@Getter
 @Builder
 public class OAuth2UserDetails implements UserDetails {
 
     private SocialType socialType;
-    private String socialId;
     private String username;
+    private String email;
+    private String gender;
+    private String ageRange;
+    private String birth;
+    private String userImage;
+    private String userId;
     private Set<GrantedAuthority> authorities;
-
-    public SocialType getSocialType() {
-        return socialType;
-    }
-
-    public String getSocialId() {
-        return socialId;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-
 
     public void setRoles(String... roles) {
         List<GrantedAuthority> authorities = new ArrayList<>(roles.length);
@@ -77,5 +57,10 @@ public class OAuth2UserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
     }
 }

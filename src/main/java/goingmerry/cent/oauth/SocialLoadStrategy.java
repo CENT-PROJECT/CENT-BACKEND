@@ -16,7 +16,7 @@ public abstract class SocialLoadStrategy {
 
     protected final RestTemplate restTemplate = new RestTemplate();
 
-    public String getSocialPk(String accessToken) {
+    public OAuth2UserDetails getOAuth2UserDetails(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
 
         setHeaders(accessToken, headers);
@@ -29,7 +29,7 @@ public abstract class SocialLoadStrategy {
         return sendRequestToSocialSite(request);//구체 클래스가 구현
     }
 
-    protected abstract String sendRequestToSocialSite(HttpEntity request);
+    protected abstract OAuth2UserDetails sendRequestToSocialSite(HttpEntity request);
 
 
 

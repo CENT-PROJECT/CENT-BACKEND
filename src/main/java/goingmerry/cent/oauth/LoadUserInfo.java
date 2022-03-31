@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class LoadUserInfo {
@@ -17,12 +19,11 @@ public class LoadUserInfo {
 
         SocialLoadStrategy socialLoadStrategy = getSocialLoadStrategy(socialType);//SocialLoadStrategy 설정
 
-        String socialPk = socialLoadStrategy.getSocialPk(authentication.getAccessToken());//PK 가져오기
+        OAuth2UserDetails oAuth2UserDetails = socialLoadStrategy.getOAuth2UserDetails(authentication.getAccessToken());//PK 가져오기
 
-        return OAuth2UserDetails.builder() //PK와 SocialType을 통해 회원 생성
-                .socialId(socialPk)
-                .socialType(socialType)
-                .build();
+        //값들 더 불러오기 가능 (우리가 원하는 유저 정보들)
+
+        return oAuth2UserDetails;
     }
 
     private SocialLoadStrategy getSocialLoadStrategy(SocialType socialType) {

@@ -31,9 +31,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.github.spullara.mustache.java/compiler : (test 사용자 화면 html로 보기 위해 임시 import)
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client : redirect 주소 자동 라이브러리 연결 (컨트롤러 사용하지 않아도 됨)
-	//properties 파일 읽어 들임 & client 사용할 경우 redierturl 도 고정된 폼 사용
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	//jwt
+	// jwt
 	implementation 'com.auth0:java-jwt:3.19.0'
 }
 

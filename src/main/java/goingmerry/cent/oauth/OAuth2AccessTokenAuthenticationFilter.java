@@ -1,8 +1,6 @@
 package goingmerry.cent.oauth;
 
 import goingmerry.cent.domain.SocialType;
-import goingmerry.cent.oauth.AccessTokenAuthenticationProvider;
-import goingmerry.cent.oauth.AccessTokenSocialTypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.Authentication;
@@ -64,7 +62,7 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
         //AbstractAuthenticationProcessingFilter 의 추상 메서드를 구현한다. Authentication 객체를 반환해야 한다.
 
         SocialType socialType = extractSocialType(request);
-        //어떤 소셜 로그인을 진행할 것인지를 uri롤 통해 추출한다. kakao, google, naver가 있으며, 예를 들어 /oauth2/login/kakao로 요청을 보내면 kakao를 추출한다
+        //어떤 소셜 로그인을 진행할 것인지를 uri롤 통해 추출한다. kakao, google 있으며, 예를 들어 /oauth2/login/kakao로 요청을 보내면 kakao를 추출한다
 
         String accessToken = request.getHeader(ACCESS_TOKEN_HEADER_NAME); //헤더의 AccessToken에 해당하는 값을 가져온다.
         log.info("{}",socialType.getSocialName());

@@ -49,12 +49,10 @@ public class AccessTokenSocialTypeToken extends AbstractAuthenticationToken {
     }
 
 
-
     @Override
     public Object getCredentials() {
         return null;
     }
-
 
 }
 

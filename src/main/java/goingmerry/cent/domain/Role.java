@@ -3,7 +3,7 @@ package goingmerry.cent.domain;
 public enum Role {
 
     USER("ROLE_USER"),
-    GUEST("ROLE_GUEST"),
+    LEADER("ROLE_LEADER"),
     ADMIN("ROLE_ADMIN");
 
     private String grantedAuthority;
