@@ -11,14 +11,16 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Component
+
 @Slf4j
+@Component
 public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String DEFAULT_OAUTH2_LOGIN_REQUEST_URL_PREFIX = "/login/oauth2/";
@@ -29,9 +31,6 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
 
     private static final String ACCESS_TOKEN_HEADER_NAME = "Authorization";
     //AccessToken을 해더에 보낼 때, 해더의 key는 Authorization이다.
-
-
-
 
 
     private static final AntPathRequestMatcher DEFAULT_OAUTH2_LOGIN_PATH_REQUEST_MATCHER =
@@ -59,7 +58,7 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        //AbstractAuthenticationProcessingFilter 의 추상 메서드를 구현한다. Authentication 객체를 반환해야 한다.
+        //AbstractAuthenticationProcessingFilter 의 추상 메서드를 구현한다. Authentication 객체를 반환해야 한다. (기본값 /login 시도를 하게 되면 실행되는 함수)
 
         SocialType socialType = extractSocialType(request);
         //어떤 소셜 로그인을 진행할 것인지를 uri롤 통해 추출한다. kakao, google 있으며, 예를 들어 /oauth2/login/kakao로 요청을 보내면 kakao를 추출한다
@@ -81,6 +80,12 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
                 //subString을 통해 문자열을 잘라주었다. 해당 코드를 실행하면 ~~~/kakao에서 kakao만 추출된다
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 URL 주소입니다"));
+    }
+
+    //attemptAuthentication 이 성공적으로 인증 된 후 실행 될 로직
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        super.successfulAuthentication(request, response, chain, authResult);
     }
 }
 
