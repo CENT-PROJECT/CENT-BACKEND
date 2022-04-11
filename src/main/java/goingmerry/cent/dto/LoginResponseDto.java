@@ -7,11 +7,14 @@ import lombok.Getter;
 @Getter
 public class LoginResponseDto {
     private String accessToken;
-    private boolean isJoined;
+    private boolean isJoined = true;
 
     @Builder
-    public LoginResponseDto(String accessToken, boolean isJoined) {
+    public LoginResponseDto(String accessToken) {
         this.accessToken = accessToken;
-        this.isJoined = isJoined;
+    }
+
+    public void setJoined(boolean joined) {
+        isJoined = joined;
     }
 }
