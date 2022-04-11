@@ -15,23 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OAuthController {
 
-
     @GetMapping("/")
-    public String getAccessCode(){
-        return "index";
+    public String index(@RequestHeader String Authorization){
+
+        return Authorization;
     }
 
-//    @GetMapping("/login/oauth2/kakao")
-//    public String getAccess(@RequestHeader String Authorization){
-//        return "success";
-//    }
-
-
-    //Authentication 의존성 주입
-    public @ResponseBody String testOAuthLogin(Authentication authentication ,@RequestHeader String Authorization) {
-
-
-        return "OAuth 세션 정보 확인하기";
-
-    }
 }

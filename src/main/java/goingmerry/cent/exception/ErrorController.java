@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
 
-    @RequestMapping(value = {"/"}, method= {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = {"/error"}, method= {RequestMethod.GET, RequestMethod.POST})
     public String handleError() {
         return "/index.html";
     }

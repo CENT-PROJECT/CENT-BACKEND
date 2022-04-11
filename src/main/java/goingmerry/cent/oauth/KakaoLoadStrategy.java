@@ -25,7 +25,6 @@ public class KakaoLoadStrategy extends SocialLoadStrategy {
             Map<String,Object> properties = (Map<String, Object>) response.getBody().get("properties");
             Map<String,Object> account = (Map<String, Object>) response.getBody().get("kakao_account");
 
-
             return OAuth2UserDetails.builder()
                     .userId(userId)
                     .username((String) account.get("name"))

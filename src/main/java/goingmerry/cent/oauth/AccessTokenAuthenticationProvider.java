@@ -54,6 +54,8 @@ public class AccessTokenAuthenticationProvider implements AuthenticationProvider
                     .userImage(oAuth2User.getUserImage())
                     .socialType(oAuth2User.getSocialType())
                     .build();
+
+            userRepository.save(user);
             return user;
         }else {
             return existUser.get();
