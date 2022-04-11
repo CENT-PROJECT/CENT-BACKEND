@@ -40,7 +40,7 @@ public class AccessTokenAuthenticationProvider implements AuthenticationProvider
 
 
     private User saveOrGet(OAuth2UserDetails oAuth2User) {
-        
+
         Optional<User> existUser = userRepository.findBySocialTypeAndUserId(oAuth2User.getSocialType(), oAuth2User.getUserId());
         if(existUser.isEmpty()){
             User user = User.builder()

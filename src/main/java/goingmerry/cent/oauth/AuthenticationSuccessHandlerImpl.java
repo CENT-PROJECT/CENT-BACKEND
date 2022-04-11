@@ -15,13 +15,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
-//    private final JwtTokenProvider jwtProvider;
+    private final JwtTokenProvider jwtProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         // 전달받은 인증정보 SecurityContextHolder에 저장
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("aaaa");
+//      SecurityContextHolder.getContext().setAuthentication(authentication);
+
         response.sendRedirect("/"); //로그인창으로 이동
 
     }
