@@ -32,7 +32,7 @@ public class User extends BaseTimeEntity{
 
     private String userImage;
 
-    private String userId;
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
@@ -41,7 +41,13 @@ public class User extends BaseTimeEntity{
     private Role role;
 
     @Builder
-    public User(String userId, SocialType socialType, Role role) {
+    public User(String userName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
+        this.userName = userName;
+        this.email = email;
+        this.gender = gender;
+        this.ageRange = ageRange;
+        this.birth = birth;
+        this.userImage = userImage;
         this.userId = userId;
         this.socialType = socialType;
         this.role = role;

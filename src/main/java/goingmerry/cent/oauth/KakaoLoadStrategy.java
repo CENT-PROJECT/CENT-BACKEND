@@ -21,12 +21,21 @@ public class KakaoLoadStrategy extends SocialLoadStrategy {
                     SocialType.KAKAO.getMethod(),
                     request,
                     RESPONSE_TYPE);
-
+            Long userId = (Long) response.getBody().get("id");
             Map<String,Object> properties = (Map<String, Object>) response.getBody().get("properties");
-            System.out.println(properties);
-            System.out.println(properties.get("nickname"));
+            Map<String,Object> account = (Map<String, Object>) response.getBody().get("kakao_account");
 
-            return OAuth2UserDetails.builder().build();
+
+            return OAuth2UserDetails.builder()
+                    .userId(userId)
+                    .username((String) account.get("name"))
+                    .socialType(SocialType.KAKAO)
+                    .userImage((String)properties.get("profile_image"))
+                    .ageRange((String)account.get("age_range"))
+                    .gender((String)account.get("gender"))
+                    .birth((String)account.get("birthday"))
+                    .build();
+
 
         } catch (Exception e) {
             log.error("AccessToken을 사용하여 KAKAO 유저정보를 받아오던 중 예외가 발생했습니다 {}" ,e.getMessage() );

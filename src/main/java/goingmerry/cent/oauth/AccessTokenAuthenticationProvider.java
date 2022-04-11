@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Component
 public class AccessTokenAuthenticationProvider implements AuthenticationProvider {//AuthenticationProvider을 구현받아 authenticate와 supports를 구현해야 한다.
@@ -38,11 +40,25 @@ public class AccessTokenAuthenticationProvider implements AuthenticationProvider
 
 
     private User saveOrGet(OAuth2UserDetails oAuth2User) {
-        return userRepository.findBySocialTypeAndUserId(oAuth2User.getSocialType(), oAuth2User.getUserId())  //socailID(식별값)과 어떤 소셜 로그인 유형인지를 통해 DB에서 조회
-                .orElseGet(() -> userRepository.save(User.builder()
-                        .socialType(oAuth2User.getSocialType())
-                        .userId(oAuth2User.getUserId())
-                        .role(Role.LEADER).build())); //없다면 멤버를 새로 만드는데, USER가 아니라 LEADER로 설정했다. 이는 아래해서 설명한다
+        
+        Optional<User> existUser = userRepository.findBySocialTypeAndUserId(oAuth2User.getSocialType(), oAuth2User.getUserId());
+        if(existUser.isEmpty()){
+            User user = User.builder()
+                    .socialType(oAuth2User.getSocialType())
+                    .userId(oAuth2User.getUserId())
+                    .role(Role.USER)
+                    .ageRange(oAuth2User.getAgeRange())
+                    .birth(oAuth2User.getBirth())
+                    .email(oAuth2User.getEmail())
+                    .gender(oAuth2User.getGender())
+                    .userImage(oAuth2User.getUserImage())
+                    .socialType(oAuth2User.getSocialType())
+                    .build();
+            return user;
+        }else {
+            return existUser.get();
+        }
+
     }
 
 

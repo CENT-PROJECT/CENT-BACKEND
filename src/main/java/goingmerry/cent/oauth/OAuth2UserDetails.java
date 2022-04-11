@@ -23,7 +23,7 @@ public class OAuth2UserDetails implements UserDetails {
     private String ageRange;
     private String birth;
     private String userImage;
-    private String userId;
+    private Long userId;
     private Set<GrantedAuthority> authorities;
 
     public void setRoles(String... roles) {
