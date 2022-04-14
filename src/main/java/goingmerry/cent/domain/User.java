@@ -18,7 +18,7 @@ public class User extends BaseTimeEntity{
 
     private String email;
 
-    private String activityArea;
+    private String activityArea = "";
 
     private String Position;
 
