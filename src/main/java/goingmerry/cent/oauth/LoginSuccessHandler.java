@@ -1,10 +1,10 @@
 package goingmerry.cent.oauth;
 
-//import goingmerry.cent.jwt.JwtTokenProvider;
 import goingmerry.cent.domain.User;
 import goingmerry.cent.jwt.JwtTokenProvider;
 import goingmerry.cent.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -29,12 +29,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 전달받은 인증정보 SecurityContextHolder에 저장
         OAuth2UserDetails oAuthUser = (OAuth2UserDetails) authentication.getPrincipal();
         Optional<User> user = userRepository.findBySocialTypeAndUserId(oAuthUser.getSocialType(), oAuthUser.getUserId());
-
-        accessToken = jwtProvider.createAccessToken(user.get());
-        System.out.println(accessToken);
-        response.setHeader("Authorization", accessToken);
-        response.sendRedirect("/");
-
+        JSONObject jsonObject = new JSONObject();
+        if(user.get().getActivityArea().isEmpty()){
+            jsonObject.put("isJoined", false);
+        }else {
+            accessToken = jwtProvider.createAccessToken(user.get());
+            jsonObject.put("accessToken", accessToken);
+            jsonObject.put("isJoined", true);
+        }
+            response.getWriter().println(jsonObject);
     }
 
 }

@@ -18,7 +18,7 @@ public class JwtTokenResolver {
 
     //Header 에서 AccessToken 꺼내기
     public String resolveToken(HttpServletRequest req) {
-        return req.getHeader("token");
+        return req.getHeader("Authorization");
     }
 
     //AccessToken 에서 userIdx 꺼내기

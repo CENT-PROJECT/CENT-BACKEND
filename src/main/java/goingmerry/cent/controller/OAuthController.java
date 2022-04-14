@@ -27,8 +27,12 @@ public class OAuthController {
     private final UserRepository userRepository;
 
     @GetMapping("/")
-    public ResponseEntity<LoginResponseDto> index(@RequestHeader String Authorization){
+    public ResponseEntity<LoginResponseDto> index(@RequestHeader String Authorization,@RequestHeader String accessToken){
+        System.out.println("111");
+        System.out.println(Authorization);
+        System.out.println(accessToken);
         Long id = jwtTokenResolver.getId(Authorization);
+        System.out.println("222");
         Optional<User> user = userRepository.findById(id);
         LoginResponseDto dto = new LoginResponseDto(Authorization);
         if(user.get().getActivityArea().isEmpty()){
