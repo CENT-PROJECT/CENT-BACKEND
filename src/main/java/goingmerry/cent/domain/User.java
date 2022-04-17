@@ -1,5 +1,6 @@
 package goingmerry.cent.domain;
 
+import goingmerry.cent.dto.UserSaveDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,5 +52,11 @@ public class User extends BaseTimeEntity{
         this.userId = userId;
         this.socialType = socialType;
         this.role = role;
+    }
+
+    public void additionalInfo(UserSaveDto userSaveDto) {
+        this.activityArea = userSaveDto.getActivityArea();
+        this.Position = userSaveDto.getPosition();
+        this.isExpert = userSaveDto.isExpert();
     }
 }

@@ -27,13 +27,14 @@ public class KakaoLoadStrategy extends SocialLoadStrategy {
 
             return OAuth2UserDetails.builder()
                     .userId(userId)
-                    .username((String) account.get("name"))
+                    .username((String) properties.get("nickname"))
                     .socialType(SocialType.KAKAO)
                     .userImage((String)properties.get("profile_image"))
                     .ageRange((String)account.get("age_range"))
                     .gender((String)account.get("gender"))
                     .birth((String)account.get("birthday"))
                     .build();
+
 
 
         } catch (Exception e) {
