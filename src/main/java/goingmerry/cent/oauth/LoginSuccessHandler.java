@@ -30,14 +30,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2UserDetails oAuthUser = (OAuth2UserDetails) authentication.getPrincipal();
         Optional<User> user = userRepository.findBySocialTypeAndUserId(oAuthUser.getSocialType(), oAuthUser.getUserId());
         JSONObject jsonObject = new JSONObject();
+        accessToken = jwtProvider.createAccessToken(user.get());
+        jsonObject.put("accessToken", accessToken);
 
         if(!user.get().getActivityArea().equals("")){
             jsonObject.put("isJoined", false);
-        }else {
-            accessToken = jwtProvider.createAccessToken(user.get());
-            jsonObject.put("accessToken", accessToken);
-            jsonObject.put("isJoined", true);
         }
+
         response.getWriter().println(jsonObject);
     }
 

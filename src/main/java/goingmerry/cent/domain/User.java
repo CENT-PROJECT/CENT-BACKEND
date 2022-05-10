@@ -41,6 +41,12 @@ public class User extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
+//    @OneToOne
+//    @JoinColumn(name = "team_id")
+//    private Team team
+
+
+
     @Builder
     public User(String userName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
         this.userName = userName;
