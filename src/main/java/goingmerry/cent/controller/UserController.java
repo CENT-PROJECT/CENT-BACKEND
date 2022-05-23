@@ -20,7 +20,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/")
-    public ResponseEntity<LoginResponseDto> index(@RequestHeader String Authorization){
+    public ResponseEntity<LoginResponseDto> userFirstJoinOrLogin(@RequestHeader String Authorization){
         
         Long id = jwtTokenResolver.getId(Authorization);
         Optional<User> user = userRepository.findById(id);
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<String> userJoin(@RequestHeader String Authorization, @RequestBody UserSaveDto userSaveDto){
+    public ResponseEntity<String> userSecondJoin(@RequestHeader String Authorization, @RequestBody UserSaveDto userSaveDto){
         Long id = jwtTokenResolver.getId(Authorization);
         Optional<User> user = userRepository.findById(id);
         user.get().additionalInfo(userSaveDto);

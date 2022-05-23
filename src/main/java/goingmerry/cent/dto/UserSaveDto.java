@@ -6,13 +6,16 @@ import lombok.Getter;
 public class UserSaveDto {
     private String activityArea = "";
 
-    private String Position;
+    private String nickName;
+
+    private String position;
 
     private boolean isExpert;
 
-    public UserSaveDto(String activityArea, String position, boolean isExpert) {
+    public UserSaveDto(String activityArea, String nickName, String position, boolean isExpert) {
         this.activityArea = activityArea;
-        Position = position;
+        this.nickName = nickName;
+        this.position = position;
         this.isExpert = isExpert;
     }
 }

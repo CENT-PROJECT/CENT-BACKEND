@@ -17,6 +17,8 @@ public class User extends BaseTimeEntity{
 
     private String userName;
 
+    private String nickName;
+
     private String email;
 
     private String activityArea = "";
@@ -48,7 +50,7 @@ public class User extends BaseTimeEntity{
 
 
     @Builder
-    public User(String userName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
+    public User(String userName, String nickName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
