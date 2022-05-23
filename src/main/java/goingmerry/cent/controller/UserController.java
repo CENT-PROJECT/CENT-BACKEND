@@ -3,8 +3,10 @@ package goingmerry.cent.controller;
 import goingmerry.cent.domain.User;
 import goingmerry.cent.dto.LoginResponseDto;
 import goingmerry.cent.dto.UserSaveDto;
+import goingmerry.cent.dto.UserUpdateDto;
 import goingmerry.cent.jwt.JwtTokenResolver;
 import goingmerry.cent.repository.UserRepository;
+import goingmerry.cent.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class UserController {
 
     private final JwtTokenResolver jwtTokenResolver;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping("/")
     public ResponseEntity<LoginResponseDto> userFirstJoinOrLogin(@RequestHeader String Authorization){
@@ -39,6 +42,12 @@ public class UserController {
         Optional<User> user = userRepository.findById(id);
         user.get().additionalInfo(userSaveDto);
 
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @PostMapping("/user/update")
+    public ResponseEntity<String> userUpdate(@RequestHeader String Authorization, @RequestBody UserUpdateDto dto){
+        userService.update(dto);
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 

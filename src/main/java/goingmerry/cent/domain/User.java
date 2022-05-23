@@ -1,6 +1,7 @@
 package goingmerry.cent.domain;
 
 import goingmerry.cent.dto.UserSaveDto;
+import goingmerry.cent.dto.UserUpdateDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,7 @@ public class User extends BaseTimeEntity{
 
     private String activityArea = "";
 
-    private String Position;
+    private String position;
 
     private boolean isExpert;
 
@@ -50,7 +51,7 @@ public class User extends BaseTimeEntity{
 
 
     @Builder
-    public User(String userName, String nickName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
+    public User(String userName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
@@ -63,8 +64,17 @@ public class User extends BaseTimeEntity{
     }
 
     public void additionalInfo(UserSaveDto userSaveDto) {
+        this.nickName = userSaveDto.getNickName();
         this.activityArea = userSaveDto.getActivityArea();
-        this.Position = userSaveDto.getPosition();
+        this.position = userSaveDto.getPosition();
         this.isExpert = userSaveDto.isExpert();
+    }
+
+    public void update(UserUpdateDto dto){
+        this.nickName = dto.getNickName();
+        this.activityArea = dto.getActivityArea();
+        this.ageRange = dto.getAgeRange();
+        this.position = dto.getPosition();
+        this.isExpert = dto.isExpert();
     }
 }
