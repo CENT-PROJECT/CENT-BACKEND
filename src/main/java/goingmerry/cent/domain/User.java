@@ -1,28 +1,37 @@
 package goingmerry.cent.domain;
 
-import goingmerry.cent.dto.UserSaveDto;
-import goingmerry.cent.dto.UserUpdateDto;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-public class User extends BaseTimeEntity{
+public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userName;
+//    private String userName;
 
     private String nickName;
 
     private String email;
 
-    private String activityArea = "";
+    private String password;
+
+    private String activityArea;
 
     private String position;
 
@@ -30,51 +39,61 @@ public class User extends BaseTimeEntity{
 
     private String gender;
 
-    private String ageRange;
+//    private int ageRange;
 
-    private String birth;
+//    private String birth;
 
     private String userImage;
 
-    private Long userId;
-
-    @Enumerated(EnumType.STRING)
-    private SocialType socialType;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
 //    @OneToOne
 //    @JoinColumn(name = "team_id")
 //    private Team team
 
-
-
     @Builder
-    public User(String userName, String email, String gender, String ageRange, String birth, String userImage, Long userId, SocialType socialType, Role role) {
-        this.userName = userName;
+    public User(String email, String password, List<String> roles) {
         this.email = email;
-        this.gender = gender;
-        this.ageRange = ageRange;
-        this.birth = birth;
-        this.userImage = userImage;
-        this.userId = userId;
-        this.socialType = socialType;
-        this.role = role;
+        this.password = password;
+        this.roles = roles;
     }
 
-    public void additionalInfo(UserSaveDto userSaveDto) {
-        this.nickName = userSaveDto.getNickName();
-        this.activityArea = userSaveDto.getActivityArea();
-        this.position = userSaveDto.getPosition();
-        this.isExpert = userSaveDto.isExpert();
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
-    public void update(UserUpdateDto dto){
-        this.nickName = dto.getNickName();
-        this.activityArea = dto.getActivityArea();
-        this.ageRange = dto.getAgeRange();
-        this.position = dto.getPosition();
-        this.isExpert = dto.isExpert();
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

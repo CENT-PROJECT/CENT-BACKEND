@@ -1,54 +1,41 @@
 package goingmerry.cent.controller;
 
 import goingmerry.cent.domain.User;
-import goingmerry.cent.dto.LoginResponseDto;
-import goingmerry.cent.dto.UserSaveDto;
-import goingmerry.cent.dto.UserUpdateDto;
-import goingmerry.cent.jwt.JwtTokenResolver;
+import goingmerry.cent.jwt.JwtTokenProvider;
 import goingmerry.cent.repository.UserRepository;
-import goingmerry.cent.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
-    private final JwtTokenResolver jwtTokenResolver;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    private final UserService userService;
 
-    @GetMapping("/")
-    public ResponseEntity<LoginResponseDto> userFirstJoinOrLogin(@RequestHeader String Authorization){
-        
-        Long id = jwtTokenResolver.getId(Authorization);
-        Optional<User> user = userRepository.findById(id);
-        LoginResponseDto dto = new LoginResponseDto(Authorization);
-        if(user.get().getActivityArea().isEmpty()){
-            dto.setJoined(false);
-            return new ResponseEntity<LoginResponseDto>(dto, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<LoginResponseDto>(dto, HttpStatus.OK);
-        }
-    }
-
+    // 회원가입
     @PostMapping("/join")
-    public ResponseEntity<String> userSecondJoin(@RequestHeader String Authorization, @RequestBody UserSaveDto userSaveDto){
-        Long id = jwtTokenResolver.getId(Authorization);
-        Optional<User> user = userRepository.findById(id);
-        user.get().additionalInfo(userSaveDto);
-
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+    public Long join(@RequestBody Map<String, String> user) {
+        return userRepository.save(User.builder()
+                .email(user.get("email"))
+                .password(passwordEncoder.encode(user.get("password")))
+                .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
+                .build()).getId();
     }
 
-    @PostMapping("/user/update")
-    public ResponseEntity<String> userUpdate(@RequestHeader String Authorization, @RequestBody UserUpdateDto dto){
-        userService.update(dto);
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+    // 로그인
+    @PostMapping("/login")
+    public String login(@RequestBody Map<String, String> user) {
+        User member = userRepository.findByEmail(user.get("email"))
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+        if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
+            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+        }
+        return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
     }
-
 }
