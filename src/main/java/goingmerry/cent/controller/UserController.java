@@ -38,7 +38,12 @@ public class UserController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        LoginResponseDto dto = new LoginResponseDto(jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
-        return dto;
+        LoginResponseDto responseData = new LoginResponseDto(jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
+        return responseData;
+    }
+
+    @GetMapping
+    public String home() {
+        return "home";
     }
 }

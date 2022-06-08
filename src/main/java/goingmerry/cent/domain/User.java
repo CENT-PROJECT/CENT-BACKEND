@@ -21,15 +21,15 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;    //DB 저장 인덱스
 
-//    private String userName;
+    private String userName;
 
     private String nickName;
 
-    private String email;
+    private String email;   //ID
 
-    private String password;
+    private String password;    //Password
 
     private String activityArea;
 
@@ -39,11 +39,8 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     private String gender;
 
-//    private int ageRange;
+    // 생년월일
 
-//    private String birth;
-
-    private String userImage;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
