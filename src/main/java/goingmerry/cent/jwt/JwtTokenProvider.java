@@ -19,11 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${spring.jwt.secretKey}")
     private String secretKey;
 
     // 토큰 유효시간 30분
     private long tokenValidTime = 30 * 60 * 1000L;
+    private long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7일
+
 
     private final UserDetailsService userDetailsService;
 
@@ -44,6 +46,16 @@ public class JwtTokenProvider {
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
+                .compact();
+    }
+
+    public String createRefreshToken() {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 

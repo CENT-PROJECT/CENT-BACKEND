@@ -1,6 +1,7 @@
 package goingmerry.cent.config;
 
 import goingmerry.cent.jwt.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,11 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 요청에 대한 사용권한 체크
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/").hasRole("USER")
+                .antMatchers("/").hasRole("USER");
 //                .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+//                .and()
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+//                        UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
     }
 }

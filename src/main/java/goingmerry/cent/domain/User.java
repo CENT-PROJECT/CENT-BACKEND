@@ -39,7 +39,9 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     private String gender;
 
-    // 생년월일
+    private String birthDate;
+
+    private boolean emailAuth;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -49,6 +51,11 @@ public class User extends BaseTimeEntity implements UserDetails {
 //    @OneToOne
 //    @JoinColumn(name = "team_id")
 //    private Team team
+
+
+    public void setEmailAuth(boolean emailAuth) {
+        this.emailAuth = emailAuth;
+    }
 
     @Builder
     public User(String email, String password, List<String> roles) {

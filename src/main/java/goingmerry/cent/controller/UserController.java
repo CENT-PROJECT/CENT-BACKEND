@@ -1,9 +1,15 @@
 package goingmerry.cent.controller;
 
+import goingmerry.cent.domain.EmailAuth;
 import goingmerry.cent.domain.User;
+import goingmerry.cent.dto.EmailAuthRequestDto;
 import goingmerry.cent.dto.LoginResponseDto;
+import goingmerry.cent.dto.UserSaveDto;
 import goingmerry.cent.jwt.JwtTokenProvider;
+import goingmerry.cent.repository.EmailAuthRepository;
 import goingmerry.cent.repository.UserRepository;
+import goingmerry.cent.service.ResponseService;
+import goingmerry.cent.service.SignService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +25,23 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
+    private final EmailAuthRepository emailAuthRepository;
+    private final SignService signService;
+    private final ResponseService responseService;
+
+
     // 회원가입
     @PostMapping("/join")
-    public Long join(@RequestBody Map<String, String> user) {
-        return userRepository.save(User.builder()
-                .email(user.get("email"))
-                .password(passwordEncoder.encode(user.get("password")))
-                .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                .build()).getId();
+    public String join(@RequestBody Map<String, String> user) {
+        signService.registerMember(new UserSaveDto(user.get("email"), user.get("password")));
+        return "success";
+    }
+
+    @PostMapping("/aaa")
+    public String aaa(@RequestBody Map<String, String> user) {
+        EmailAuth email = emailAuthRepository.findByEmail(user.get("email"));
+        signService.confirmEmail(new EmailAuthRequestDto(email.getEmail(), email.getAuthToken()));
+        return "success";
     }
 
     // 로그인
