@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 
 @Repository
-public interface EmailAuthRepository extends JpaRepository<EmailAuth,Long>{
+public interface EmailAuthRepository extends JpaRepository<EmailAuth,Long>, EmailAuthCustomRepository{
     @Query(value = "select p.* from email_auth p where p.email = ?1 AND p.auth_token = ?2", nativeQuery = true)
     EmailAuth findValidAuthByEmail(String email, String authToken);
 

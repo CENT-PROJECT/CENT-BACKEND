@@ -43,15 +43,15 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     private boolean emailAuth;
 
-
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+//    //연관관계 주인
+//    // team 삽입 , 삭제 , 수정 다 가능.
 //    @OneToOne
 //    @JoinColumn(name = "team_id")
-//    private Team team
-
+//    private Team team;
 
     public void setEmailAuth(boolean emailAuth) {
         this.emailAuth = emailAuth;

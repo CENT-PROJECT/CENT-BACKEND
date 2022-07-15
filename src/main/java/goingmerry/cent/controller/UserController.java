@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -27,7 +26,6 @@ public class UserController {
 
     private final EmailAuthRepository emailAuthRepository;
     private final SignService signService;
-    private final ResponseService responseService;
 
 
     // 회원가입
@@ -37,8 +35,8 @@ public class UserController {
         return "success";
     }
 
-    @PostMapping("/aaa")
-    public String aaa(@RequestBody Map<String, String> user) {
+    @PostMapping("/emailVerify")
+    public String emailVerify(@RequestBody Map<String, String> user) {
         EmailAuth email = emailAuthRepository.findByEmail(user.get("email"));
         signService.confirmEmail(new EmailAuthRequestDto(email.getEmail(), email.getAuthToken()));
         return "success";
