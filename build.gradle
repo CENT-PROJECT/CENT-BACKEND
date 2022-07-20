@@ -15,7 +15,7 @@ group = 'goingmerry'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-ext["hibernate.version"] = "5.6.5.Final"
+//ext["hibernate.version"] = "5.6.5.Final"
 
 configurations {
 	compileOnly {
@@ -31,19 +31,26 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
+
+	//lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	runtimeOnly 'mysql:mysql-connector-java'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.google.code.gson:gson:2.8.7'
+
+	//spring data jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	// https://mvnrepository.com/artifact/com.github.spullara.mustache.java/compiler : (test 사용자 화면 html로 보기 위해 임시 import)
-	implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
+	//jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 	//mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//querydsl
+	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
@@ -52,7 +59,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-//querydsl 추가 시작
+//querydsl 추가시작
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
@@ -73,7 +80,7 @@ configurations {
 }
 
 //Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
-clean {
-	delete file('src/main/generated')
-}
+//clean {
+//	delete file('src/main/generated')
+//}
 
