@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://sent.cjiuhacfunbj.ap-northeast-2.rds.amazonaws.com:3306/sent?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://sent.cjiuhacfunbj.ap-northeast-2.rds.amazonaws.com:3306/SENT?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: admin 
     password: Sent123!
