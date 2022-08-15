@@ -7,12 +7,20 @@ spring:
   jwt:
     secretKey: JJWCJHLCGCBG13245
   jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    show_sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-        ddl-auto: none
         use-new-id-generator-mappings: false
+#     properties:
+#       hibernate:
+#         show_sql: true
+#         format_sql: true
+#         ddl-auto: update
+#         use-new-id-generator-mappings: false
   mail:
     host: smtp.gmail.com
     port: 587
