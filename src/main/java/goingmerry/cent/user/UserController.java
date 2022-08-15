@@ -25,7 +25,7 @@ public class UserController {
 
 
     // 회원가입 - 임시 권한
-    @PostMapping("/api/vi/join")
+    @PostMapping("/api/join")
     public String join(@RequestBody UserDto.UserSaveDto dto) throws Exception {
         signService.join(dto);
         return "이메일 인증을 하신 뒤 로그인 해주세요!!!";
