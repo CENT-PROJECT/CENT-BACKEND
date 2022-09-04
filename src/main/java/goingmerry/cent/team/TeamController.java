@@ -2,18 +2,10 @@ package goingmerry.cent.team;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,121 +157,5 @@ public class TeamController {
 
 
     }
-
-//  포메이션 관련
-
-    @GetMapping(value = "/formation/get")
-    public ResponseEntity getFormation(@RequestParam Long teamId) {
-
-        log.info("[API CALL] : /api/team/formation/get");
-
-        TeamFormationDto res = teamService.getFormation(teamId);
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
-
-    @PatchMapping(value = "/formation/update")
-    public ResponseEntity<TeamFormationDto> updateFormation(@RequestBody TeamFormationDto req) {
-
-        log.info("[API CALL : /api/formation/formation/update");
-
-        log.info(req.getFormationName());
-        log.info(req.getTeamId().toString());
-        for(int i=0;i<req.getPlayerList().size();i++) {
-            log.info("{}", req.getPlayerList().get(i));
-        }
-
-
-        TeamFormationDto res = teamService.updateFormation(req);
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
-
-
-    // 로고 이미지 관련
-
-    @PostMapping(value = "/logo/update")
-    public ResponseEntity updateLogo(@RequestParam("logo") MultipartFile logo, @RequestParam Long teamId) throws IOException {
-
-        String fileName = StringUtils.cleanPath(logo.getOriginalFilename());
-
-        // 확장자 추출 및 검사
-        String extension = teamService.getExtension(fileName);
-
-        if(extension.equals("error")) {
-
-            Map<String, Object> res = new HashMap<>();
-//            res.put("code", 401);
-            res.put("msg", "지원하지 않는 확장자입니다.");
-
-            return new ResponseEntity(res, HttpStatus.BAD_REQUEST);
-        }
-
-          TeamDto resDto = teamService.updateLogo(logo, teamId, extension);
-
-        return new ResponseEntity<>(resDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/logo/get")
-    public ResponseEntity getLogo(@RequestParam Long teamId) {
-
-        TeamLogoDto logoDto = teamService.getLogo(teamId);
-        Resource resource = logoDto.getResource();
-
-//        if(!resource.exists()) {
-        if(resource == null) {
-            return new ResponseEntity<Resource>(HttpStatus.BAD_REQUEST);
-        }
-
-        HttpHeaders header = new HttpHeaders();
-
-        Path filePath = null;
-        try{
-            filePath = Paths.get(logoDto.getFilePath());
-            header.add("Content-type", Files.probeContentType(filePath));
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity(resource, header, HttpStatus.OK);
-
-    }
-
-
-
-//    ################################ 지역 관련 ################################
-//
-//
-//    //지역을 도 / 시 값으로 전체 출력하는 api, 현재 json으로 list in map의 형식을 띄고 있다.
-//    @RequestMapping(value = "/allArea", method = RequestMethod.GET)
-//    public List<Map<String, String>> listAllCity() {
-//
-////        List<Map<String, String>> returnMap = areaRepository.findAllArea();
-////
-////        return returnMap;
-//        return areaRepository.findAllArea();
-//    }
-//
-//    //도명을 받아서 시를 추출해내는 api
-//    @RequestMapping(value = "/getcity", method = RequestMethod.GET)
-//    public List<String> listCityByRegion(@RequestParam Map<String, String> regionName) {
-//
-//        String region = regionName.get("region");
-//
-//        List<String> regionList = areaRepository.findCityByRegion(region);
-//        log.debug("{}", regionList);
-//        return regionList;
-//    }
-//
-//    //지역(city)를 받아서 해당하는 팀명 리스트 보내주는 api
-//    @RequestMapping(value = "/list/cityteam", method = RequestMethod.GET)
-//    public List<String> listTeamNameByCity(@RequestParam Map<String, String> area) {
-//
-//        String city = area.get("city");
-////        List<String> returnList = teamRepository.findTeamNameByArea(city);
-////
-////        return returnList;
-//        return teamRepository.findTeamNameByArea(city);
-//    }
 
 }
