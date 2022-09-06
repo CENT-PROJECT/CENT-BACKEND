@@ -60,7 +60,7 @@ public class SignService {
         Optional<EmailAuth> emailAuth = emailAuthRepository.findValidAuthByEmail(requestDto.getEmail(), requestDto.getAuthToken(), LocalDateTime.now());
         Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
         emailAuth.get().useToken();
-        user.get().setRole(Role.ROLE_USER);
+        user.get().setRole(Role.USER);
     }
 
     /**
