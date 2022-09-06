@@ -2,10 +2,6 @@ package goingmerry.cent.team;
 
 
 import goingmerry.cent.config.FileUploadUtil;
-import goingmerry.cent.player.Player;
-import goingmerry.cent.player.PlayerDto;
-import goingmerry.cent.player.PlayerRepository;
-import goingmerry.cent.player.PlayerService;
 import goingmerry.cent.user.User;
 import goingmerry.cent.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +29,7 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    private final PlayerRepository playerRepository;
-
     private final UserRepository userRepository;
-
-    private final PlayerService playerService;
 
     public boolean isLeaderExist(Long userId) {
 
@@ -187,53 +179,6 @@ public class TeamService {
             log.info("로고가 존재하지 않습니다.");
         }
 
-    }
-
-    public TeamFormationDto getFormation(Long teamId) {
-
-        TeamFormationDto res = new TeamFormationDto();
-
-        Team teamEntity = teamRepository.getById(teamId);
-
-        String formationName = teamEntity.getFormationName();
-
-        res.setTeamId(teamId);
-        res.setFormationName(formationName);
-
-        List<PlayerDto> playerRes = playerService.getPlayersByTeamId(teamId);
-
-        res.setPlayerList(playerRes);
-
-        return res;
-    }
-
-    // 해당 어노테이션 없으면 update 로직 안 돌아감.
-    // 팀 포메이션명, 선수 already, current, formationIndex update
-    @Transactional
-    public TeamFormationDto updateFormation(TeamFormationDto req) {
-
-        Long teamId = req.getTeamId();
-        String formationName = req.getFormationName();
-
-        // team get
-        Optional<Team> optionalTeam = teamRepository.findById(teamId);
-        Team teamEntity = optionalTeam.get();
-
-        // team update formationName;
-        teamEntity.update(formationName);
-
-        // get players;
-        List<PlayerDto> players = req.getPlayerList();
-
-        // player update
-        for (PlayerDto player : players) {
-            Player entity = playerRepository.getById(player.getId());
-
-            entity.update(player);
-
-        }
-
-        return req;
     }
 
     // 로고 이미지 관련
