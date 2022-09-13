@@ -1,7 +1,9 @@
 package goingmerry.cent.config;
 
+import goingmerry.cent.exception.type.ForbiddenException;
 import goingmerry.cent.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
@@ -14,10 +16,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private static final String[] whitelist = {"/", "/login", "/join"};
+    private static final String[] whitelist = {"/", "/api/login", "/api/join", "/api/sign/verify-email", "/error"};
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -29,6 +32,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         //whiteList 처리
         if (checkIsWhitelist(requestURI)) {
             chain.doFilter(request, response);
+            return;
         }
         // 헤더에서 JWT 를 받아옵니다.
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
@@ -38,8 +42,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             // SecurityContext 에 Authentication 객체를 저장합니다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
+        } else {
+//        throw new ServletException("토큰 유효성 검사 실패");
+            throw new ForbiddenException();
         }
-        throw new ServletException("토큰 유효성 검사 실패");
+
     }
 
     /**
