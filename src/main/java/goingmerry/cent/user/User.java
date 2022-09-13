@@ -55,16 +55,16 @@ public class User extends BaseTimeEntity implements UserDetails{
 
     @Builder
     public User(UserDto.UserSaveDto dto) {
-        this.userName = dto.getUserName();
-        this.nickName = dto.getNickName();
+//        this.userName = dto.getUserName();
+//        this.nickName = dto.getNickName();
         this.email = dto.getEmail();
         this.password = dto.getPassword();
-        this.activityArea = dto.getActivityArea();
-        this.position = dto.getPosition();
-        this.isExpert = dto.isExpert();
-        this.gender = dto.getGender();
-        this.birthDate = dto.getBirthDate();
-        this.role = Role.ROLE_UNVERIFIED_USER;
+//        this.activityArea = dto.getActivityArea();
+//        this.position = dto.getPosition();
+//        this.isExpert = dto.isExpert();
+//        this.gender = dto.getGender();
+//        this.birthDate = dto.getBirthDate();
+        this.role = Role.UNVERIFIED_USER;
     }
 
 
