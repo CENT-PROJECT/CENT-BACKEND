@@ -1,8 +1,6 @@
 package goingmerry.cent.user;
 
 import goingmerry.cent.BaseTimeEntity;
-import goingmerry.cent.player.Player;
-import goingmerry.cent.team.Team;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,17 +42,6 @@ public class User extends BaseTimeEntity implements UserDetails{
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToOne(mappedBy = "user")
-    private Player player;
-
-    @OneToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-
-    @OneToOne(mappedBy = "leaderUser")
-    private Team team1;
 
     //연관관계 주인
     // team 삽입 , 삭제 , 수정 다 가능.
@@ -119,8 +106,4 @@ public class User extends BaseTimeEntity implements UserDetails{
         return authorities;
     }
 
-    public void update(Team entity) {
-        this.team = entity;
-
-    }
 }
