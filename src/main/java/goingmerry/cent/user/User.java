@@ -1,7 +1,6 @@
 package goingmerry.cent.user;
 
 import goingmerry.cent.BaseTimeEntity;
-import goingmerry.cent.player.Player;
 import goingmerry.cent.team.Team;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,9 +44,6 @@ public class User extends BaseTimeEntity implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "user")
-    private Player player;
-
     @OneToOne
     @JoinColumn(name = "team_id")
     private Team team;
@@ -77,7 +73,7 @@ public class User extends BaseTimeEntity implements UserDetails{
         this.isExpert = dto.isExpert();
         this.gender = dto.getGender();
         this.birthDate = dto.getBirthDate();
-        this.role = Role.UNVERIFIED_USER;
+        this.role = Role.ROLE_UNVERIFIED_USER;
     }
 
 
