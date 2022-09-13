@@ -4,6 +4,7 @@ import goingmerry.cent.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -16,10 +17,19 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
+    private static final String[] whitelist = {"/", "/login", "/join"};
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String requestURI = httpServletRequest.getRequestURI();
+
+        //whiteList 처리
+        if (checkIsWhitelist(requestURI)) {
+            chain.doFilter(request, response);
+        }
         // 헤더에서 JWT 를 받아옵니다.
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         if (jwtTokenProvider.validateToken(token) && token != null) {
@@ -30,6 +40,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             chain.doFilter(request, response);
         }
         throw new ServletException("토큰 유효성 검사 실패");
+    }
+
+    /**
+     * whiteList의 경우 인증 체크를 안하도록 한다.
+     */
+    private boolean checkIsWhitelist(String requestURI) {
+        return PatternMatchUtils.simpleMatch(whitelist, requestURI);
     }
 }
 
