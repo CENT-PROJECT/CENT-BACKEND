@@ -23,7 +23,7 @@ public class EmailService {
         SimpleMailMessage smm = new SimpleMailMessage();
         smm.setTo(email);
         smm.setSubject("회원가입 이메일 인증");
-        smm.setText("http://localhost:8080/sign/verify-email?email="+email+"&authToken="+authToken);
+        smm.setText("http://localhost:8080/api/sign/verify-email?email="+email+"&authToken="+authToken);
 
         javaMailSender.send(smm);
     }
