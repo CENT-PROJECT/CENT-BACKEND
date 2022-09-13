@@ -39,17 +39,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("-----------------------");
-        System.out.println("-----------------------");
+
         http
                 .httpBasic().disable()
                 .csrf().disable() // csrf 보안 토큰 disable처리.
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("api/admin/**").hasRole("ADMIN")
-                .antMatchers("api/team/**").hasAnyRole("USER", "LEADER")
-                .antMatchers("api/team/**").hasRole("LEADER")
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/team/**").hasAnyRole("USER", "LEADER")
+                .antMatchers("/api/team/**").hasRole("LEADER")
+                .antMatchers("/api/test").hasRole("USER")
                 .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
