@@ -1,5 +1,5 @@
-# CENT-BACKEND
-CENT BACKEND Repository
+# SPORTY-BACKEND
+SPORTY BACKEND Repository
 
 
 # 계층 구조
