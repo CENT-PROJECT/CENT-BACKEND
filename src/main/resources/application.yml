@@ -4,10 +4,10 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: admin
 #    password: Sent123!
-    url: jdbc:mysql://localhost:3306/cent?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/spoty?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: password
+    password: root
   jwt:
     secretKey: JJWCJHLCGCBG13245
   jpa:
