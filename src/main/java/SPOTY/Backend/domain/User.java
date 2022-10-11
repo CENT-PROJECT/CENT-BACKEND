@@ -3,7 +3,6 @@ package SPOTY.Backend.domain;
 import SPOTY.Backend.global.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@NoArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -66,6 +64,10 @@ public class User extends BaseTimeEntity {
         this.preferredPosition = preferredPosition;
         this.isExpert = isExpert;
         this.birthDate = birthDate;
+    }
+
+    public User() {
+        this.id = UUID.randomUUID().toString();
     }
 }
 
