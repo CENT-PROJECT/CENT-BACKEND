@@ -1,5 +1,6 @@
 package SPOTY.Backend.domain;
 
+import SPOTY.Backend.global.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     private String id;
