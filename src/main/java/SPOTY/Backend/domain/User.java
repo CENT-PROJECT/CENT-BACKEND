@@ -3,6 +3,8 @@ package SPOTY.Backend.domain;
 import SPOTY.Backend.global.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 
 import javax.persistence.*;
@@ -11,36 +13,40 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String email;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String username;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String nickname;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String password;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String state;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String city;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(50)")
     private String preferredPosition;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String isExpert;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(100)")
     private String birthDate;
 
     @Enumerated(EnumType.STRING)
@@ -54,7 +60,6 @@ public class User extends BaseTimeEntity {
     public User(String email, String username, String nickname,
                 String password, String state, String city, String preferredPosition,
                 String isExpert, String birthDate) {
-        this.id = UUID.randomUUID().toString();
         this.email = email;
         this.username = username;
         this.nickname = nickname;
@@ -64,10 +69,6 @@ public class User extends BaseTimeEntity {
         this.preferredPosition = preferredPosition;
         this.isExpert = isExpert;
         this.birthDate = birthDate;
-    }
-
-    public User() {
-        this.id = UUID.randomUUID().toString();
     }
 }
 
