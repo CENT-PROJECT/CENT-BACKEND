@@ -51,9 +51,12 @@ public class UserService {
     public UserResponseDto.LoginResponseDto login(UserRequestDto.LoginRequestDto dto) {
         Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
         optionalUtil.ifEmptyThrowError(optionalUser, new UnAuthorizedUser());
-        String token = tokenService.encode(optionalUser.get());
 
-        return new UserResponseDto.LoginResponseDto(token);
+        if (passwordEncoder.matches(dto.getPassword(), optionalUser.get().getPassword())) {
+            String token = tokenService.encode(optionalUser.get());
+            return new UserResponseDto.LoginResponseDto(token);
+        }
+        throw new UnAuthorizedUser();
     }
 
 }

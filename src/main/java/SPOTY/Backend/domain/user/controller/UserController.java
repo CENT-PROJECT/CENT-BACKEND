@@ -18,15 +18,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto.LoginResponseDto> login(
             @RequestBody UserRequestDto.LoginRequestDto dto) {
-        userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
-        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-
+        UserResponseDto.LoginResponseDto response = userService.login(dto);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/home")
+    @GetMapping("/home")
     public String home() {
         return "home";
     }
