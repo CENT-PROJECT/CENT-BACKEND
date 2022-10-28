@@ -4,6 +4,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: password
+  jwt:
+    secretKey: JJWCJHLCGCBG13245
   jpa:
     show-sql: true
     hibernate:
