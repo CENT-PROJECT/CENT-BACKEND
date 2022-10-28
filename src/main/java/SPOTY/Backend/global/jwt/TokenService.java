@@ -1,7 +1,7 @@
 package SPOTY.Backend.global.jwt;
 
-import SPOTY.Backend.domain.Role;
-import SPOTY.Backend.domain.User;
+import SPOTY.Backend.domain.user.Role;
+import SPOTY.Backend.domain.user.User;
 import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
 import SPOTY.Backend.global.exception.global.BadRequestToken;
 import io.jsonwebtoken.Claims;
@@ -74,7 +74,7 @@ public class TokenService {
 
     public boolean isAdmin(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-        if (role.equals(Role.ADMIN.toString())) {
+        if (role.equals(Role.ROLE_ADMIN.toString())) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();
@@ -82,7 +82,7 @@ public class TokenService {
 
     public boolean isUser(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-        if (role.equals(Role.USER.toString())) {
+        if (role.equals(Role.ROLE_USER.toString())) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();

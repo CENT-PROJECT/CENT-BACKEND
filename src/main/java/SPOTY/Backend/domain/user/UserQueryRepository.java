@@ -1,4 +1,4 @@
-package SPOTY.Backend.domain;
+package SPOTY.Backend.domain.user;
 
 public interface UserQueryRepository {
 

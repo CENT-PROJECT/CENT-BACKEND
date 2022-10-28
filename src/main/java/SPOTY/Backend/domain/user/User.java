@@ -1,5 +1,6 @@
-package SPOTY.Backend.domain;
+package SPOTY.Backend.domain.user;
 
+import SPOTY.Backend.domain.user.Role;
 import SPOTY.Backend.global.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
