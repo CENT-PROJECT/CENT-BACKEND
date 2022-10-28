@@ -39,19 +39,21 @@ public class MailService {
     /**
      * 메일을 보내는데 우리가 전송하는 동안 기다리게 되어 그동안 블럭 상태에 놓이게 된다.
      * Async 를 통해 비동기 처리로 인한 성능개선.
-     * @param mail
-     * @param check
+     *
+     * @param dto
      */
     @Async
-    public void send(String mail, String check) {
+    public void send(MailDto.MailRequestDto dto) {
+        String check = getRandom();
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(mail);
+        mailMessage.setTo(dto.getMail());
         mailMessage.setSubject("회원가입 이메일 인증");
         mailMessage.setText("인증 코드 : " + check);
 
         mailSender.send(mailMessage);
 
-        mailRedisRepository.save(new Mail(mail, check));
+        mailRedisRepository.save(new Mail(dto.getMail(), check));
     }
 
     public boolean checkVerifiedEmail(String mail, String check) {

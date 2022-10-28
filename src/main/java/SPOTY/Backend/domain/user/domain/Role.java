@@ -1,4 +1,4 @@
-package SPOTY.Backend.domain.user;
+package SPOTY.Backend.domain.user.domain;
 
 public enum Role {
     ROLE_USER,

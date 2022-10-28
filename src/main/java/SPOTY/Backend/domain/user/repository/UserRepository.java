@@ -1,6 +1,6 @@
-package SPOTY.Backend.domain.user;
+package SPOTY.Backend.domain.user.repository;
 
-import SPOTY.Backend.domain.user.User;
+import SPOTY.Backend.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

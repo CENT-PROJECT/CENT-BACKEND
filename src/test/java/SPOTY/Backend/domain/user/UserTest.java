@@ -1,7 +1,7 @@
 package SPOTY.Backend.domain.user;
 
-import SPOTY.Backend.domain.user.User;
-import SPOTY.Backend.domain.user.UserRepository;
+import SPOTY.Backend.domain.user.domain.User;
+import SPOTY.Backend.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

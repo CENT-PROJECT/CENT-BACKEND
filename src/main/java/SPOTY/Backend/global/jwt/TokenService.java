@@ -1,7 +1,7 @@
 package SPOTY.Backend.global.jwt;
 
-import SPOTY.Backend.domain.user.Role;
-import SPOTY.Backend.domain.user.User;
+import SPOTY.Backend.domain.user.domain.Role;
+import SPOTY.Backend.domain.user.domain.User;
 import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
 import SPOTY.Backend.global.exception.global.BadRequestToken;
 import io.jsonwebtoken.Claims;

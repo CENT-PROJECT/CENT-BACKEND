@@ -1,6 +1,6 @@
-package SPOTY.Backend.domain.user;
+package SPOTY.Backend.domain.user.repository;
 
-import SPOTY.Backend.domain.user.UserQueryRepository;
+import SPOTY.Backend.domain.user.repository.UserQueryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
