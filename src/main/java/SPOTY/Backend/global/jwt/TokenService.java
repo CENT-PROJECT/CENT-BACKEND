@@ -29,7 +29,7 @@ public class TokenService {
 
     private final Base64.Decoder decoder = Base64.getUrlDecoder();
 
-    @Value("${spring.jwt.secret}")
+    @Value("${spring.jwt.secretKey}")
     private String SECRET;
     private final int EXPIRE_SECONDS = 60 * 60;
     private final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS256;

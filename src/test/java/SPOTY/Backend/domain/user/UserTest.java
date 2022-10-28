@@ -1,4 +1,4 @@
-package SPOTY.Backend.domain;
+package SPOTY.Backend.domain.user;
 
 import SPOTY.Backend.domain.user.User;
 import SPOTY.Backend.domain.user.UserRepository;
