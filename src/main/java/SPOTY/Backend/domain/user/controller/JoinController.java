@@ -1,10 +1,11 @@
 package SPOTY.Backend.domain.user.controller;
 
-import SPOTY.Backend.domain.mail.MailDto;
 import SPOTY.Backend.domain.mail.MailService;
-import SPOTY.Backend.domain.user.domain.User;
+import SPOTY.Backend.domain.mail.dto.MailRequestDto;
+import SPOTY.Backend.domain.user.dto.UserRequestDto;
 import SPOTY.Backend.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -17,14 +18,15 @@ public class JoinController {
     private final MailService mailService;
 
     @PostMapping
-    public String join(@RequestBody UserDto.UserSaveDto dto) throws Exception {
-        signService.join(dto);
-        return "이메일 인증을 하신 뒤 로그인 해주세요!!!";
+    public ResponseEntity<String> join(@RequestBody UserRequestDto.JoinRequestDto dto) {
+        userService.join(dto);
+        return ResponseEntity.ok("회원가입 완료!");
     }
 
     @PostMapping("/email")
-    public String sendEmailCode(@RequestBody MailDto.MailRequestDto dto) throws Exception {
-        mailService.send();
+    public ResponseEntity<String> sendEmailCode(@RequestBody MailRequestDto.SendMailDto dto) {
+        mailService.send(dto);
+        return ResponseEntity.ok("이메일을 확인해주세요!");
     }
 
 }

@@ -1,5 +1,6 @@
 package SPOTY.Backend.domain.mail;
 
+import SPOTY.Backend.domain.mail.dto.MailRequestDto;
 import SPOTY.Backend.global.exception.domain.mail.BadRequestMail;
 import SPOTY.Backend.global.util.OptionalUtil;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class MailService {
      * @param dto
      */
     @Async
-    public void send(MailDto.MailRequestDto dto) {
+    public void send(MailRequestDto.SendMailDto dto) {
         String check = getRandom();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -56,11 +57,9 @@ public class MailService {
         mailRedisRepository.save(new Mail(dto.getMail(), check));
     }
 
-    public boolean checkVerifiedEmail(String mail, String check) {
+    public void checkVerifiedEmail(String mail, String check) {
         Optional<Mail> optional = mailRedisRepository.findMailByIdAndCode(mail, check);
         optionalUtil.ifEmptyThrowError(optional, new BadRequestMail());
-
-        return Boolean.TRUE;
     }
 
 }

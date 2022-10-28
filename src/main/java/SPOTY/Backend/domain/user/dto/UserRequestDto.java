@@ -1,13 +1,10 @@
-package SPOTY.Backend.domain.user;
+package SPOTY.Backend.domain.user.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
-public class UserDto {
+public class UserRequestDto {
 
     @Getter
     @NoArgsConstructor
@@ -19,9 +16,11 @@ public class UserDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserSaveDto {
+    public static class JoinRequestDto {
 
         private String email;
+
+        private String code;
 
         private String username;
 
@@ -38,5 +37,9 @@ public class UserDto {
         private String isExpert;
 
         private String birthDate;
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
 }
