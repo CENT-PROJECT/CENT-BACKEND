@@ -44,6 +44,9 @@ dependencies {
 	//jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 	//querydsl
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
