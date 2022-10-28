@@ -1,11 +1,12 @@
 package SPOTY.Backend.global.exception.type;
 
-import goingmerry.cent.exception.BaseException;
+import SPOTY.Backend.global.exception.BaseException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
  * HttpStatus 가 NOT_FOUND 인 예외들의 부모 클래스.
+ * status 404
  */
 @Getter
 public class NotFoundException extends BaseException {

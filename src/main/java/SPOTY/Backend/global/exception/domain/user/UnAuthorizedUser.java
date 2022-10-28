@@ -1,6 +1,6 @@
 package SPOTY.Backend.global.exception.domain.user;
 
-import goingmerry.cent.exception.type.UnAuthorizedException;
+import SPOTY.Backend.global.exception.type.UnAuthorizedException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

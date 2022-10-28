@@ -2,12 +2,15 @@ package SPOTY.Backend.global.jwt;
 
 import SPOTY.Backend.domain.Role;
 import SPOTY.Backend.domain.User;
+import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
+import SPOTY.Backend.global.exception.global.BadRequestToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +50,10 @@ public class TokenService {
         return Jwts.builder()
                 //따로 config 로 빼줘도 좋음 - JWT 라는 value 값
                 .setHeaderParam("type", "JWT")
-                .setIssuer("JIWEON-JEONG")
+                .setIssuer("SPOTY")
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Duration.ofMinutes(EXPIRE_SECONDS).toMillis()))
                 .claim("id", user.getId())
-                .claim("email", user.getEmail())
                 .claim("role", user.getRole())
                 .signWith(ALGORITHM, SECRET_KEY)
                 .compact();
@@ -70,20 +72,20 @@ public class TokenService {
         return parser.parseObject();
     }
 
-    public boolean isAdmin(Map<String, Object> payload) throws ParseException {
+    public boolean isAdmin(Map<String, Object> payload) {
         String role = payload.get("role").toString();
         if (role.equals(Role.ADMIN.toString())) {
             return Boolean.TRUE;
         }
-        throw new RuntimeException("권한 ADMIN 아닙니다.");
+        throw new ForbiddenUser();
     }
 
-    public boolean isUser(Map<String, Object> payload) throws ParseException {
+    public boolean isUser(Map<String, Object> payload) {
         String role = payload.get("role").toString();
         if (role.equals(Role.USER.toString())) {
             return Boolean.TRUE;
         }
-        throw new RuntimeException("권한 USER 아닙니다.");
+        throw new ForbiddenUser();
     }
 
     public void checkExpToken(String token) throws RuntimeException {
@@ -96,18 +98,18 @@ public class TokenService {
         Date current = new Date();
 
         if (expiration.before(current)){
-            throw new RuntimeException("Token 갱신 해주세요.");
+            throw new BadRequestToken();
         }
     }
 
 
-    public boolean checkValidateToken(String token) throws RuntimeException {
+    public boolean checkValidateToken(String token) {
         String[] chunks = token.split("\\.");
         String tokenWithoutSignature = chunks[0] + "." + chunks[1];
         String signature = chunks[2];
         DefaultJwtSignatureValidator validator = new DefaultJwtSignatureValidator(ALGORITHM, SECRET_KEY);
         if (!validator.isValid(tokenWithoutSignature, signature)) {
-            throw new RuntimeException("Could not verify JWT token integrity!");
+            throw new BadRequestToken();
         }
         return true;
     }

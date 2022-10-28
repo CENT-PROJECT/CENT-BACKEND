@@ -1,6 +1,6 @@
 package SPOTY.Backend.global.exception.domain.user;
 
-import goingmerry.cent.exception.type.ForbiddenException;
+import SPOTY.Backend.global.exception.type.ForbiddenException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
