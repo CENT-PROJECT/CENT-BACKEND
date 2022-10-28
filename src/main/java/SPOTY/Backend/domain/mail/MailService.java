@@ -18,9 +18,6 @@ import java.util.Random;
 @Service
 @Transactional
 public class MailService {
-
-    private final String REDIS_MAIL_PREFIX = "mail:";
-
     private final JavaMailSender mailSender;
 
     private final MailRedisRepository mailRedisRepository;
@@ -58,14 +55,10 @@ public class MailService {
     }
 
     public boolean checkVerifiedEmail(String mail, String check) {
-
-        Optional<Mail> optional = mailRedisRepository.findById(REDIS_MAIL_PREFIX + mail);
+        Optional<Mail> optional = mailRedisRepository.findMailByIdAndCode(mail, check);
         optionalUtil.ifEmptyThrowError(optional, new BadRequestMail());
 
-        if (optional.get().getCode().equals(check)) {
-            return Boolean.TRUE;
-        }
-        throw new BadRequestMail();
+        return Boolean.TRUE;
     }
 
 }

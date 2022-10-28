@@ -15,6 +15,7 @@ public class Mail {
     public static final int DEFAULT_TTL_SECONDS = 300;
 
     @Id
+    @Indexed
     private String id;
 
     @Indexed

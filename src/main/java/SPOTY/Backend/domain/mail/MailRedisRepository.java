@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface MailRedisRepository extends CrudRepository<Mail, String> {
-    Optional<Mail> findMailByCode(String code);
+    Optional<Mail> findMailByIdAndCode(String id, String code);
+
 }
