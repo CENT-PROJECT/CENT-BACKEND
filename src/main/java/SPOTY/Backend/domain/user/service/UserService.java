@@ -7,6 +7,7 @@ import SPOTY.Backend.domain.user.dto.UserResponseDto;
 import SPOTY.Backend.domain.user.repository.UserRepository;
 import SPOTY.Backend.global.exception.domain.user.ConflictUser;
 import SPOTY.Backend.global.exception.domain.user.UnAuthorizedUser;
+import SPOTY.Backend.global.jwt.CreateTokenDto;
 import SPOTY.Backend.global.jwt.TokenService;
 import SPOTY.Backend.global.util.OptionalUtil;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +52,14 @@ public class UserService {
     public UserResponseDto.LoginResponseDto login(UserRequestDto.LoginRequestDto dto) {
         Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
         optionalUtil.ifEmptyThrowError(optionalUser, new UnAuthorizedUser());
+        User user = optionalUser.get();
 
         if (passwordEncoder.matches(dto.getPassword(), optionalUser.get().getPassword())) {
-            String token = tokenService.encode(optionalUser.get());
-            return new UserResponseDto.LoginResponseDto(token);
+            CreateTokenDto createTokenDto = new CreateTokenDto(
+                    user.getId(), user.getEmail(), user.getRole());
+            String accessToken = tokenService.createAccessToken(createTokenDto);
+            String refreshToken = tokenService.createAccessToken(createTokenDto);
+            return new UserResponseDto.LoginResponseDto(accessToken, refreshToken);
         }
         throw new UnAuthorizedUser();
     }
