@@ -2,9 +2,11 @@ package SPOTY.Backend.global.jwt;
 
 import SPOTY.Backend.domain.user.domain.Role;
 import SPOTY.Backend.domain.user.domain.User;
+import SPOTY.Backend.global.exception.BaseException;
 import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
 import SPOTY.Backend.global.exception.global.BadRequestToken;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.util.Base64;
@@ -31,7 +34,9 @@ public class TokenService {
 
     @Value("${spring.jwt.secretKey}")
     private String SECRET;
-    private final int EXPIRE_SECONDS = 60 * 60;
+
+    private final int ACCESS_TOKEN_EXPIRE_SECONDS = 60 * 60;
+    private final int REFRESH_TOKEN_EXPIRE_DAYS = 7;
     private final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS256;
     private SecretKeySpec SECRET_KEY;
 
@@ -40,24 +45,40 @@ public class TokenService {
         this.SECRET_KEY = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
     }
 
-    /**
-     * 유저 데이터를 JWT로 암호화 하는 함수.
-     * @param user User 객체
-     * @return String 생성된 JWT String
-     */
-    public String encode(User user) {
-        Date now = new Date();
-        return Jwts.builder()
+    private JwtBuilder encode() {
+        JwtBuilder jwtBuilder = Jwts.builder()
                 //따로 config 로 빼줘도 좋음 - JWT 라는 value 값
                 .setHeaderParam("type", "JWT")
                 .setIssuer("SPOTY")
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(EXPIRE_SECONDS).toMillis()))
-                .claim("id", user.getId())
-                .claim("role", user.getRole())
-                .signWith(ALGORITHM, SECRET_KEY)
+                .signWith(ALGORITHM, SECRET_KEY);
+    }
+
+    public String createAccessToken(CreateTokenDto dto) {
+        JwtBuilder jwtBuilder = encode();
+        Date now = new Date();
+        return jwtBuilder
+                .setExpiration(new Date(
+                        now.getTime() + Duration.ofMinutes(ACCESS_TOKEN_EXPIRE_SECONDS).toMillis()
+                ))
+                .claim("id", dto.getUserId())
+                .claim("role", dto.getRole())
                 .compact();
     }
+
+    public String createRefreshToken(User user) {
+        JwtBuilder jwtBuilder = encode();
+        Date now = new Date();
+        return jwtBuilder
+                .setExpiration(new Date(
+                        now.getTime() + Duration.ofMinutes(ACCESS_TOKEN_EXPIRE_SECONDS).toMillis()
+                ))
+                .claim("id", user.getId())
+                .claim("role", user.getRole())
+                .compact();
+    }
+
+
+
 
     /**
      * JWT String 을 Map 으로 파싱해주는 함수.
@@ -70,6 +91,17 @@ public class TokenService {
         String jwtBodyString = new String(decoder.decode(chunks[1]));
         JSONParser parser = new JSONParser(jwtBodyString);
         return parser.parseObject();
+    }
+
+    // Request의 Header에서 token 값을 가져옵니다.
+    // "Authorization" : <Bearer> "TOKEN'
+    public String getToken(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        try {
+            return authorization.split(" ")[1];
+        } catch (BaseException e) {
+            throw new BadRequestToken();
+        }
     }
 
     public boolean isAdmin(Map<String, Object> payload) {
@@ -88,7 +120,10 @@ public class TokenService {
         throw new ForbiddenUser();
     }
 
-    public void checkExpToken(String token) throws RuntimeException {
+    public void validateToken(String token) {
+    }
+
+    private void checkExpToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
@@ -103,7 +138,7 @@ public class TokenService {
     }
 
 
-    public boolean checkValidateToken(String token) {
+    private boolean checkTokenSignature(String token) {
         String[] chunks = token.split("\\.");
         String tokenWithoutSignature = chunks[0] + "." + chunks[1];
         String signature = chunks[2];
