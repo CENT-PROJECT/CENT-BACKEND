@@ -1,8 +1,12 @@
 package SPOTY.Backend.global.security.filter;
 
+import SPOTY.Backend.global.exception.BaseException;
 import SPOTY.Backend.global.jwt.TokenService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
@@ -35,18 +39,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 헤더가 필요한 요청에 대하여 헤더가 비어있을 때 - 시작
+        if (request.getHeader("Authorization") == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 헤더에서 JWT 를 받아옵니다.
         String token = tokenService.getToken(request);
 
-        if (token != null) {
-
-            // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옵니다.
-//            Authentication authentication = jwt.getAuthentication(token);
-            // SecurityContext 에 Authentication 객체를 저장합니다.
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            tokenService.validateToken(token);
+        } catch (BadCredentialsException | SignatureException | BaseException | ExpiredJwtException ex) {
             filterChain.doFilter(request, response);
+            return;
         }
-        throw new ServletException("토큰 유효성 검사 실패");
+        // 해당 AccessToken Payload 유효하다면 인가 및 인증객체 저장
+        String loginId = jwtResolver.jwtResolveToUserLoginId(token);
+
+        try {
+            UserDetails requestUserDetails = userDetailsService.loadUserByUsername(loginId);
+        } catch (CustomException | NoSuchElementException e) {
+            JSONObject responseJson = new JSONObject();
+            try {
+                responseJson.put("code", HttpServletResponse.SC_BAD_REQUEST);
+                responseJson.put("message", ErrorCode.USER_NOT_EXIST.toString());
+            } catch (JSONException ex) {
+                throw new RuntimeException(ex);
+            }
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print(responseJson);
+            return;
+        }
+
+        UserDetails requestUserDetails = userDetailsService.loadUserByUsername(loginId);
+
+        // JWT 를 바탕으로 인증 객체 생성
+        Authentication authToken =
+                new UsernamePasswordAuthenticationToken(requestUserDetails.getUsername(), requestUserDetails.getPassword());
+        // Authorities 부여
+        Authentication auth = authenticationManager.authenticate(authToken);
+
+        // SecurityContextHolder 에 저장
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        filterChain.doFilter(request, response);
+    }
     }
 
     /**

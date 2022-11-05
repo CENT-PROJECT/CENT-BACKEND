@@ -4,6 +4,7 @@ import SPOTY.Backend.domain.user.domain.Role;
 import SPOTY.Backend.global.exception.BaseException;
 import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
 import SPOTY.Backend.global.exception.global.BadRequestToken;
+import SPOTY.Backend.global.exception.global.UnAuthorizedToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +24,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -75,13 +77,18 @@ public class TokenService {
                 .compact();
     }
 
+    public UUID getUUID(String token) throws ParseException {
+        Map<String, Object> payload = parse(token);
+        return (UUID) payload.get("id");
+    }
+
     /**
      * JWT String 을 Map 으로 파싱해주는 함수.
      * @param token JWT String
      * @return Map<String, Object> key, value 형태의 Map 데이터
      * @throws ParseException 파싱 실패 예외처리
      */
-    public Map<String, Object> parse(String token) throws ParseException {
+    private Map<String, Object> parse(String token) throws ParseException {
         String[] chunks = token.split("\\.");
         String jwtBodyString = new String(decoder.decode(chunks[1]));
         JSONParser parser = new JSONParser(jwtBodyString);
@@ -116,6 +123,10 @@ public class TokenService {
     }
 
     public void validateToken(String token) {
+        checkTokenSignature(token);
+        if (IsExpired(token)) {
+            throw new UnAuthorizedToken();
+        }
     }
 
     private boolean IsExpired(String token) {

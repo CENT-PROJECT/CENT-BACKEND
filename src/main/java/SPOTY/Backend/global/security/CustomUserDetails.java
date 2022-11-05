@@ -16,8 +16,6 @@ public class CustomUserDetails implements UserDetails {
 
     private UUID id;
 
-    private String email;
-
     private String role;
 
 
@@ -28,10 +26,9 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
-    public CustomUserDetails(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.role = user.getRole().toString();
+    public CustomUserDetails(UUID id, String role) {
+        this.id = id;
+        this.role = role;
     }
 
     /**
