@@ -29,7 +29,6 @@ import java.util.UUID;
 /**
  * 매 요청마다 JWT 가 유효한지 검증하고, 유효할 시 해당 유저에 Security Context 를 인가 해주는 필터
  */
-@RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -40,6 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailService userDetailsService;
 
     private final AuthenticationManager authenticationManager;
+
+    public JwtAuthenticationFilter(TokenService tokenService,
+                                   CustomUserDetailService userDetailsService,
+                                   AuthenticationManager authenticationManager) {
+        this.tokenService = tokenService;
+        this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @SneakyThrows
     @Override

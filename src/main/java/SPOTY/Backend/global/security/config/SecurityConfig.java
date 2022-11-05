@@ -1,6 +1,9 @@
 package SPOTY.Backend.global.security.config;
 
 import SPOTY.Backend.global.config.CorsConfig;
+import SPOTY.Backend.global.jwt.TokenService;
+import SPOTY.Backend.global.security.CustomUserDetailService;
+import SPOTY.Backend.global.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,6 +23,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CorsConfig corsConfig;
+
+    private final TokenService tokenService;
+
+    private final CustomUserDetailService userDetailsService;
+
+    private final AuthenticationManager authenticationManager;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,15 +45,12 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/**").hasRole("ADMIN")// 테스트 시 path 관리할 것
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
 
-//                .and()
-//                .addFilter(new CustomAuthenticationFilter(authenticationManager, jwtProvider, objectMapper))
-//                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProvider, jwtValidator, jwtAuthenticator))
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService, authenticationManager),
+                        UsernamePasswordAuthenticationFilter.class);
 
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-//                .accessDeniedHandler(new CustomAccessDeniedHandler());
 
         return http.build();
     }
@@ -52,11 +59,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        return new CustomAuthenticationProvider(userRepository, principalDetailService);
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
