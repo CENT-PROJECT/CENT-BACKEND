@@ -1,7 +1,6 @@
 package SPOTY.Backend.global.jwt;
 
 import SPOTY.Backend.domain.user.domain.Role;
-import SPOTY.Backend.domain.user.domain.User;
 import SPOTY.Backend.global.exception.BaseException;
 import SPOTY.Backend.global.exception.domain.user.ForbiddenUser;
 import SPOTY.Backend.global.exception.global.BadRequestToken;
@@ -119,7 +118,7 @@ public class TokenService {
     public void validateToken(String token) {
     }
 
-    private void checkExpToken(String token) {
+    private boolean IsExpired(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
@@ -128,9 +127,10 @@ public class TokenService {
         Date expiration = claims.getExpiration();
         Date current = new Date();
 
-        if (expiration.before(current)){
-            throw new BadRequestToken();
+        if (expiration.before(current)) {
+            return Boolean.TRUE;
         }
+        return Boolean.FALSE;
     }
 
 
