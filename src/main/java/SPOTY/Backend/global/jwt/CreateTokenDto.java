@@ -12,5 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateTokenDto {
     private UUID userId;
+    private String email;
     private Role role;
 }

@@ -53,6 +53,7 @@ public class TokenService {
                 .setHeaderParam("type", "JWT")
                 .setIssuer("SPOTY")
                 .claim("id", dto.getUserId())
+                .claim("email", dto.getEmail())
                 .claim("role", dto.getRole())
                 .signWith(ALGORITHM, SECRET_KEY);
     }
@@ -80,6 +81,11 @@ public class TokenService {
     public UUID getUUID(String token) throws ParseException {
         Map<String, Object> payload = parse(token);
         return (UUID) payload.get("id");
+    }
+
+    public String getEmail(String token) throws ParseException {
+        Map<String, Object> payload = parse(token);
+        return (String) payload.get("email");
     }
 
     /**

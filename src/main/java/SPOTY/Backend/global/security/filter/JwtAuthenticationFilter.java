@@ -2,13 +2,19 @@ package SPOTY.Backend.global.security.filter;
 
 import SPOTY.Backend.global.exception.BaseException;
 import SPOTY.Backend.global.jwt.TokenService;
+import SPOTY.Backend.global.security.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 /**
  * 매 요청마다 JWT 가 유효한지 검증하고, 유효할 시 해당 유저에 Security Context 를 인가 해주는 필터
@@ -29,6 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 
+    private final CustomUserDetailService userDetailsService;
+
+    private final AuthenticationManager authenticationManager;
+
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
@@ -54,30 +67,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // 해당 AccessToken Payload 유효하다면 인가 및 인증객체 저장
-        String loginId = jwtResolver.jwtResolveToUserLoginId(token);
 
-        try {
-            UserDetails requestUserDetails = userDetailsService.loadUserByUsername(loginId);
-        } catch (CustomException | NoSuchElementException e) {
-            JSONObject responseJson = new JSONObject();
-            try {
-                responseJson.put("code", HttpServletResponse.SC_BAD_REQUEST);
-                responseJson.put("message", ErrorCode.USER_NOT_EXIST.toString());
-            } catch (JSONException ex) {
-                throw new RuntimeException(ex);
-            }
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print(responseJson);
-            return;
-        }
-
-        UserDetails requestUserDetails = userDetailsService.loadUserByUsername(loginId);
+        String email = tokenService.getEmail(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         // JWT 를 바탕으로 인증 객체 생성
-        Authentication authToken =
-                new UsernamePasswordAuthenticationToken(requestUserDetails.getUsername(), requestUserDetails.getPassword());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null);
+
         // Authorities 부여
         Authentication auth = authenticationManager.authenticate(authToken);
 
@@ -86,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-    }
+
 
     /**
      * whiteList 일 경우, true 를 반환한다.

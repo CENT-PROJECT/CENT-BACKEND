@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Transactional
@@ -21,12 +22,12 @@ public class CustomUserDetailService implements UserDetailsService {
     private final OptionalUtil optionalUtil;
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findById(userId);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         optionalUtil.ifEmptyThrowError(optionalUser, new NotFoundUser());
 
         User user = optionalUser.get();
-        return new CustomUserDetails(user.getId(), user.getRole().toString());
+        return new CustomUserDetails(user.getId(), user.getEmail(), user.getRole().toString());
     }
 
 }

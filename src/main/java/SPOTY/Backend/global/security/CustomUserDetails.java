@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CustomUserDetails implements UserDetails {
 
     private UUID id;
-
+    private String email;
     private String role;
 
 
@@ -26,8 +26,9 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
-    public CustomUserDetails(UUID id, String role) {
+    public CustomUserDetails(UUID id, String email, String role) {
         this.id = id;
+        this.email = email;
         this.role = role;
     }
 
