@@ -35,7 +35,9 @@ public class TokenService {
     @Value("${spring.jwt.secretKey}")
     private String SECRET;
 
-    private final int ACCESS_TOKEN_EXPIRE_SECONDS = 60 * 60;
+    //30분
+    private final int ACCESS_TOKEN_EXPIRE_SECONDS = 60 * 30;
+    //7일
     private final int REFRESH_TOKEN_EXPIRE_DAYS = 7;
     private final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS256;
     private SecretKeySpec SECRET_KEY;
@@ -45,40 +47,34 @@ public class TokenService {
         this.SECRET_KEY = new SecretKeySpec(SECRET.getBytes(), ALGORITHM.getJcaName());
     }
 
-    private JwtBuilder encode() {
-        JwtBuilder jwtBuilder = Jwts.builder()
-                //따로 config 로 빼줘도 좋음 - JWT 라는 value 값
+    private JwtBuilder createToken(CreateTokenDto dto) {
+        return Jwts.builder()
                 .setHeaderParam("type", "JWT")
                 .setIssuer("SPOTY")
+                .claim("id", dto.getUserId())
+                .claim("role", dto.getRole())
                 .signWith(ALGORITHM, SECRET_KEY);
     }
 
     public String createAccessToken(CreateTokenDto dto) {
-        JwtBuilder jwtBuilder = encode();
         Date now = new Date();
+        JwtBuilder jwtBuilder = createToken(dto);
         return jwtBuilder
                 .setExpiration(new Date(
-                        now.getTime() + Duration.ofMinutes(ACCESS_TOKEN_EXPIRE_SECONDS).toMillis()
+                        now.getTime() + Duration.ofMinutes(ACCESS_TOKEN_EXPIRE_SECONDS).toSeconds()
                 ))
-                .claim("id", dto.getUserId())
-                .claim("role", dto.getRole())
                 .compact();
     }
 
-    public String createRefreshToken(User user) {
-        JwtBuilder jwtBuilder = encode();
+    public String createRefreshToken(CreateTokenDto dto) {
         Date now = new Date();
+        JwtBuilder jwtBuilder = createToken(dto);
         return jwtBuilder
                 .setExpiration(new Date(
-                        now.getTime() + Duration.ofMinutes(ACCESS_TOKEN_EXPIRE_SECONDS).toMillis()
+                        now.getTime() + Duration.ofMinutes(REFRESH_TOKEN_EXPIRE_DAYS).toDays()
                 ))
-                .claim("id", user.getId())
-                .claim("role", user.getRole())
                 .compact();
     }
-
-
-
 
     /**
      * JWT String 을 Map 으로 파싱해주는 함수.
