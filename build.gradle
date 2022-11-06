@@ -61,6 +61,9 @@ dependencies {
 	// spring-redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

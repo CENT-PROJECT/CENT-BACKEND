@@ -1,23 +1,31 @@
 package SPOTY.Backend.global.security;
 
-import SPOTY.Backend.domain.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private UUID id;
     private String email;
     private String role;
 
+    private Map<String, Object> attributes;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -26,10 +34,19 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
+    // 일반 로그인
     public CustomUserDetails(UUID id, String email, String role) {
         this.id = id;
         this.email = email;
         this.role = role;
+    }
+
+    // OAuth 로그인
+    public CustomUserDetails(UUID id, String email, String role, Map<String, Object> attributes) {
+        this.id = id;
+        this.email = email;
+        this.role = role;
+        this.attributes = attributes;
     }
 
     /**
@@ -64,5 +81,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

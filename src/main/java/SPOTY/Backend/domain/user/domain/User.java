@@ -56,6 +56,11 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String providerType;
+
+    private String providerId;
+
     public void setRole(Role role) {
         this.role = role;
     }

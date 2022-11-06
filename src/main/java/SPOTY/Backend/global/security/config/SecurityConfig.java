@@ -1,5 +1,6 @@
 package SPOTY.Backend.global.security.config;
 
+import SPOTY.Backend.domain.user.oauth.CustomOAuth2UserService;
 import SPOTY.Backend.global.config.CorsConfig;
 import SPOTY.Backend.global.jwt.TokenService;
 import SPOTY.Backend.global.security.CustomUserDetailService;
@@ -12,8 +13,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -29,6 +28,8 @@ public class SecurityConfig {
     private final CustomUserDetailService userDetailsService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final CustomOAuth2UserService customOauth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,7 +50,11 @@ public class SecurityConfig {
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService, authenticationManager),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(customOauth2UserService);
 
 
         return http.build();
@@ -59,10 +64,10 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+//
+//    @Bean
+//    public static PasswordEncoder passwordEncoder() {
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    }
 
 }
