@@ -1,6 +1,8 @@
-package SPOTY.Backend.domain;
+package SPOTY.Backend.domain.user.domain;
 
+import SPOTY.Backend.domain.user.dto.UserRequestDto;
 import SPOTY.Backend.global.BaseTimeEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,9 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -50,25 +54,22 @@ public class User extends BaseTimeEntity {
     private String birthDate;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.ROLE_USER;
 
     public void setRole(Role role) {
         this.role = role;
     }
 
-    @Builder
-    public User(String email, String username, String nickname,
-                String password, String state, String city, String preferredPosition,
-                String isExpert, String birthDate) {
-        this.email = email;
-        this.username = username;
-        this.nickname = nickname;
-        this.password = password;
-        this.state = state;
-        this.city = city;
-        this.preferredPosition = preferredPosition;
-        this.isExpert = isExpert;
-        this.birthDate = birthDate;
+    public User(UserRequestDto.JoinRequestDto dto) {
+        this.email = dto.getEmail();
+        this.username = dto.getUsername();
+        this.nickname = dto.getNickname();
+        this.password = dto.getPassword();
+        this.state = dto.getState();
+        this.city = dto.getCity();
+        this.preferredPosition = dto.getPreferredPosition();
+        this.isExpert = dto.getIsExpert();
+        this.birthDate = dto.getBirthDate();
     }
 }
 
