@@ -20,7 +20,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private static final String[] whitelist = {"/", "/api/login", "/api/join", "/api/sign/verify-email", "/error"};
+    private static final String[] whitelist = {"/", "/api/login", "/api/join", "/api/sign/verify-email", "/error",
+    "/oauth2/authorization/google"};
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override

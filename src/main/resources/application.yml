@@ -40,6 +40,17 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 337685329967-8sb87jn3dre6qoj6vonp2p6peql3lp9u.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
 logging:
   level:
     org:
@@ -47,6 +58,4 @@ logging:
         type:
           descriptor:
             sql: trace
-
-
 
