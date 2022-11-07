@@ -7,8 +7,6 @@ import SPOTY.Backend.global.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,8 +26,6 @@ public class SecurityConfig {
 
     private final CustomUserDetailService userDetailsService;
 
-    private final AuthenticationManager authenticationManager;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -48,16 +44,11 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService, authenticationManager),
+                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

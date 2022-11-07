@@ -5,11 +5,8 @@ import SPOTY.Backend.global.jwt.TokenService;
 import SPOTY.Backend.global.security.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.ParseException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.util.UUID;
 
 /**
  * 매 요청마다 JWT 가 유효한지 검증하고, 유효할 시 해당 유저에 Security Context 를 인가 해주는 필터
@@ -38,14 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailService userDetailsService;
 
-    private final AuthenticationManager authenticationManager;
-
     public JwtAuthenticationFilter(TokenService tokenService,
-                                   CustomUserDetailService userDetailsService,
-                                   AuthenticationManager authenticationManager) {
+                                   CustomUserDetailService userDetailsService) {
         this.tokenService = tokenService;
         this.userDetailsService = userDetailsService;
-        this.authenticationManager = authenticationManager;
     }
 
     @SneakyThrows
@@ -82,11 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Authentication authToken = new UsernamePasswordAuthenticationToken(
                 userDetails, null);
 
-        // Authorities 부여
-        Authentication auth = authenticationManager.authenticate(authToken);
-
         // SecurityContextHolder 에 저장
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }
