@@ -5,6 +5,7 @@ import SPOTY.Backend.global.jwt.TokenService;
 import SPOTY.Backend.global.security.CustomUserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +26,7 @@ import java.io.IOException;
  * 매 요청마다 JWT 가 유효한지 검증하고, 유효할 시 해당 유저에 Security Context 를 인가 해주는 필터
  */
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String[] whitelist = {"/", "/api/join/**", "/api/login"};
@@ -32,12 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
 
     private final CustomUserDetailService userDetailsService;
-
-    public JwtAuthenticationFilter(TokenService tokenService,
-                                   CustomUserDetailService userDetailsService) {
-        this.tokenService = tokenService;
-        this.userDetailsService = userDetailsService;
-    }
 
     @SneakyThrows
     @Override
