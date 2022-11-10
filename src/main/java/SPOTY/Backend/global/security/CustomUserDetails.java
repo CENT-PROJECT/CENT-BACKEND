@@ -1,6 +1,5 @@
 package SPOTY.Backend.global.security;
 
-import SPOTY.Backend.domain.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
