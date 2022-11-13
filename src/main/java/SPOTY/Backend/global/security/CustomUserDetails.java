@@ -18,6 +18,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private UUID id;
     private String email;
+    private String username;
     private String role;
 
     private Map<String, Object> attributes;
@@ -47,6 +48,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         this.email = email;
         this.role = role;
         this.attributes = attributes;
+        this.username = email;
     }
 
     /**
@@ -60,7 +62,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
@@ -85,6 +87,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return username;
     }
 }

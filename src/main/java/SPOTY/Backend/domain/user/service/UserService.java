@@ -11,6 +11,7 @@ import SPOTY.Backend.global.jwt.CreateTokenDto;
 import SPOTY.Backend.global.jwt.TokenService;
 import SPOTY.Backend.global.util.OptionalUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Lazy
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final UserRepository userRepository;
     private final OptionalUtil<User> optionalUtil;
     private final TokenService tokenService;
 
-    private void checkDuplicatedUser(String email) {
+    public void checkDuplicatedUser(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             throw new ConflictUser();
@@ -49,6 +51,11 @@ public class UserService {
         userRepository.save(new User(dto));
     }
 
+    // 회원가입 - OAuth2 이용
+    public void oauth2Join(UserRequestDto.SocialJoinRequestDto dto) {
+
+    }
+
     public UserResponseDto.LoginResponseDto login(UserRequestDto.LoginRequestDto dto) {
         Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
         optionalUtil.ifEmptyThrowError(optionalUser, new UnAuthorizedUser());
@@ -56,7 +63,7 @@ public class UserService {
 
         if (passwordEncoder.matches(dto.getPassword(), optionalUser.get().getPassword())) {
             CreateTokenDto createTokenDto = new CreateTokenDto(
-                    user.getId(), user.getEmail(), user.getRole());
+                    user.getId(), user.getEmail(), user.getRole(), user.getProviderType());
             String accessToken = tokenService.createAccessToken(createTokenDto);
             String refreshToken = tokenService.createAccessToken(createTokenDto);
             return new UserResponseDto.LoginResponseDto(accessToken, refreshToken);

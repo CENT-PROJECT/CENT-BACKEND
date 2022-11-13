@@ -42,4 +42,20 @@ public class UserRequestDto {
             this.password = password;
         }
     }
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SocialJoinRequestDto {
+
+        private String email;
+
+        private String nickname;
+
+        private String state;
+
+        private String city;
+
+        private String preferredPosition;
+
+    }
 }

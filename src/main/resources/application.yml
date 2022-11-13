@@ -44,14 +44,18 @@ spring:
             client-secret: 9IPYBUloa9
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
             authorization-grant-type: authorization_code
-            client-name: naver
+            client-name: Naver
+            scope:
+              - email
           kakao:
             client-id: 338d1c039bfac4568e74a7e029af8af2
             client-secret: Z9skMea5xxeYKrSjiCWNZ76AVPG2XrVW
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            scope: profile_nickname, profile_image, account_email
+            scope:
+              - profile_nickname
+              - account_email
             client-name: Kakao
         provider:
           naver:

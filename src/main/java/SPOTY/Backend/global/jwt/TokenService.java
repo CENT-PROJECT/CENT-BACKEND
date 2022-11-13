@@ -55,6 +55,7 @@ public class TokenService {
                 .claim("id", dto.getUserId())
                 .claim("email", dto.getEmail())
                 .claim("role", dto.getRole())
+                .claim("provider", dto.getProvider())
                 .signWith(ALGORITHM, SECRET_KEY);
     }
 

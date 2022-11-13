@@ -8,8 +8,6 @@ import SPOTY.Backend.global.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,10 +27,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailService userDetailsService;
 
-    private final AuthenticationManager authenticationManager;
-
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -46,32 +41,29 @@ public class SecurityConfig {
                 .formLogin().disable()
 
                 .authorizeRequests()
-                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/**").hasRole("ADMIN")// 테스트 시 path 관리할 것
+//                .antMatchers("/api/join/mail").permitAll()
+//                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")// role 문제로 403, 일단 주석처리
+//                .antMatchers("/api/**").hasRole("ADMIN")// 테스트 시 path 관리할 것
                 .anyRequest().permitAll()
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService, authenticationManager),
+                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
 
-                .oauth2Login()
-                .defaultSuccessUrl("/")
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .userInfoEndpoint()
-                .userService(userDetailsService);
+
+                .oauth2Login().permitAll()
+//                    .defaultSuccessUrl("/")
+                    .userInfoEndpoint()
+                        .userService(userDetailsService)
+                .and()
+                    .successHandler(oAuth2AuthenticationSuccessHandler);
 
 
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

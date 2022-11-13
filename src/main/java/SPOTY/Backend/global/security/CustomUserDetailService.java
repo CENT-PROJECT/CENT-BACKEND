@@ -10,23 +10,29 @@ import SPOTY.Backend.domain.user.repository.UserRepository;
 import SPOTY.Backend.global.exception.domain.user.NotFoundUser;
 import SPOTY.Backend.global.util.OptionalUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
+@Service
 public class CustomUserDetailService extends DefaultOAuth2UserService implements UserDetailsService {
+//public class CustomUserDetailService implements UserDetailsService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
     private final OptionalUtil optionalUtil;
@@ -43,24 +49,30 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
+//        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+//        OAuth2User oauth2User = delegate.loadUser(userRequest);
         OAuth2User oauth2User = super.loadUser(userRequest);
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = null;
 
-        System.out.println("#### userRequest.getAdditionalParameters() : " + userRequest.getAdditionalParameters());
-
-        System.out.println("## provider ## : " + provider);
-        System.out.println(oauth2User.getAttributes());
+        System.out.println("################"+oauth2User.getAttributes());
         if(provider.equals("google")) {
+
+
+            log.info("this user provider is {}", provider);
 
             oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
 
         } else if (provider.equals("naver")) {
 
+            log.info("this user provider is {}", provider);
+
             oAuth2UserInfo = new NaverUserInfo(oauth2User.getAttribute("response"));
 
         } else if (provider.equals("kakao")) {
+
+            log.info("this user provider is {}", provider);
 
             oAuth2UserInfo = new KakaoUserInfo(oauth2User.getAttributes());
 
@@ -70,6 +82,8 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
         String email = oAuth2UserInfo.getEmail();
         String userName = oAuth2UserInfo.getName();
         String password = null;
+
+//        Role role = Role.ROLE_UNFINISHED_USER;
         Role role = Role.ROLE_UNFINISHED_USER;
 
         UUID id = UUID.randomUUID();

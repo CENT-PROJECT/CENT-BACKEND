@@ -12,7 +12,8 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 
     @Override
     public String getProviderId() {
-        return (String) attributes.get("id");
+        Long providerId = (Long) attributes.get("id");
+        return providerId.toString();
     }
 
     @Override
@@ -22,12 +23,14 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 
     @Override
     public String getEmail() {
-        return (String) attributes.get("email");
+        Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
+        return (String) kakao_account.get("email");
     }
 
     @Override
     public String getName() {
-        return (String) attributes.get("name");
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+        return (String) properties.get("nickname");
     }
 
     // 추가정보 더 기입

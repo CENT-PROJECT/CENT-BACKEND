@@ -14,4 +14,5 @@ public class CreateTokenDto {
     private UUID userId;
     private String email;
     private Role role;
+    private String provider;
 }
