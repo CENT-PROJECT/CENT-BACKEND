@@ -17,10 +17,8 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * 매 요청마다 JWT 가 유효한지 검증하고, 유효할 시 해당 유저에 Security Context 를 인가 해주는 필터
@@ -29,7 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String[] whitelist = {"/", "/api/join/**", "/api/login"};
+    private static final String[] whitelist = {"/", "/api/join", "/api/join/email", "/api/login"};
 
     private final TokenService tokenService;
 
@@ -37,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         String requestURI = request.getRequestURI();
 
         //whiteList 처리
@@ -66,8 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         // JWT 를 바탕으로 인증 객체 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null);
+        Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
         // SecurityContextHolder 에 저장
         SecurityContextHolder.getContext().setAuthentication(authToken);

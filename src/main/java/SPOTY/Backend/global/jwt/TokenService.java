@@ -103,7 +103,7 @@ public class TokenService {
     }
 
     // Request의 Header에서 token 값을 가져옵니다.
-    // "Authorization" : <Bearer> "TOKEN'
+    // "Authorization" : <Bearer> "TOKEN"
     public String getToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         try {
@@ -115,7 +115,8 @@ public class TokenService {
 
     public boolean isAdmin(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-        if (role.equals(Role.ROLE_ADMIN.toString())) {
+//        if (role.equals(Role.ROLE_ADMIN.toString())) {
+        if (role.equals(Role.ADMIN)) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();
@@ -123,7 +124,8 @@ public class TokenService {
 
     public boolean isUser(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-        if (role.equals(Role.ROLE_USER.toString())) {
+//        if (role.equals(Role.ROLE_USER.toString())) {
+        if (role.equals(Role.USER)) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();
