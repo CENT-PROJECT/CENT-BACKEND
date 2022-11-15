@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 public class UserRequestDto {
 
     @Getter
@@ -46,6 +48,8 @@ public class UserRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SocialJoinRequestDto {
+
+        private UUID id;
 
         private String email;
 

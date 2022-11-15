@@ -76,5 +76,14 @@ public class User extends BaseTimeEntity {
         this.isExpert = dto.getIsExpert();
         this.birthDate = dto.getBirthDate();
     }
+
+    public User(UserRequestDto.SocialJoinRequestDto dto) {
+        this.id = dto.getId();
+        this.email = dto.getEmail();
+        this.nickname = dto.getNickname();
+        this.state = dto.getState();
+        this.city = dto.getCity();
+        this.preferredPosition = dto.getPreferredPosition();
+    }
 }
 

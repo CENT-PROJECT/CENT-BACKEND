@@ -5,9 +5,11 @@ import java.util.Map;
 public class KakaoUserInfo implements OAuth2UserInfo{
 
     private Map<String, Object> attributes;
+    private Map<String, Object> kakao_account;
 
     public KakaoUserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
+        this.kakao_account = (Map<String, Object>) attributes.get("kakao_account");
     }
 
     @Override
@@ -23,7 +25,6 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 
     @Override
     public String getEmail() {
-        Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
         return (String) kakao_account.get("email");
     }
 
@@ -31,6 +32,11 @@ public class KakaoUserInfo implements OAuth2UserInfo{
     public String getName() {
         Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
         return (String) properties.get("nickname");
+    }
+
+    @Override
+    public String getBirthDate() {
+        return (String) kakao_account.get("birthday");
     }
 
     // 추가정보 더 기입

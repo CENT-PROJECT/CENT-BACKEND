@@ -30,5 +30,10 @@ public class NaverUserInfo implements OAuth2UserInfo{
         return (String) attributes.get("name");
     }
 
+    @Override
+    public String getBirthDate() {
+        return (String) attributes.get("birthday");
+    }
+
     // 추가정보 더 기입
 }

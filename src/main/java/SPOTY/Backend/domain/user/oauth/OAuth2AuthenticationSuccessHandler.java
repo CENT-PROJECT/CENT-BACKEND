@@ -1,23 +1,22 @@
 package SPOTY.Backend.domain.user.oauth;
 
 import SPOTY.Backend.domain.user.domain.User;
-import SPOTY.Backend.domain.user.dto.UserResponseDto;
 import SPOTY.Backend.domain.user.repository.UserRepository;
 import SPOTY.Backend.global.jwt.CreateTokenDto;
 import SPOTY.Backend.global.jwt.TokenService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Optional;
 
 @Slf4j
@@ -27,9 +26,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final TokenService tokenService;
 
-    private final ObjectMapper objectMapper;
-
     private final UserRepository userRepository;
+
+    @Value("${custom.spoty-server.front.url}")
+    private String spotyServerFrontUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -50,35 +50,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("access Token: {}", accessToken);
         log.info("refresh Token: {}", refreshToken);
 
-        UserResponseDto.LoginResponseDto token = new UserResponseDto.LoginResponseDto(accessToken, refreshToken);
+        String url = spotyServerFrontUrl + "/api/token?accessToken={value}&refreshToken={value}";
 
-        String targetUrl = UriComponentsBuilder.fromUriString("/")
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .build().toUriString();
-
-        log.info("response : {}", targetUrl);
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(url)
+                .buildAndExpand(accessToken, refreshToken);
+        System.out.println("uri = " + uri);
 
         // 이렇게 반환할지
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response, String.valueOf(uri));
 
-        // 이렇게 반환할지
-        writeTokenResponse(response, token);
-
-    }
-
-    private void writeTokenResponse(HttpServletResponse response, UserResponseDto.LoginResponseDto responseDto) throws IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        response.addHeader("accessToken", responseDto.getAccessToken());
-        response.addHeader("refreshToken", responseDto.getRefreshToken());
-
-        response.setContentType("application/json;charset=UTF-8");
-
-        // 반환 위치 어디로,,?
-        PrintWriter writer = response.getWriter();
-        writer.println(objectMapper.writeValueAsString(responseDto));
-        writer.flush();
     }
 
 }

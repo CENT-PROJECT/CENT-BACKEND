@@ -16,10 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -32,7 +30,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailService extends DefaultOAuth2UserService implements UserDetailsService {
-//public class CustomUserDetailService implements UserDetailsService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
     private final OptionalUtil optionalUtil;
@@ -49,20 +46,18 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-//        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-//        OAuth2User oauth2User = delegate.loadUser(userRequest);
         OAuth2User oauth2User = super.loadUser(userRequest);
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = null;
 
-        System.out.println("################"+oauth2User.getAttributes());
-        if(provider.equals("google")) {
+        System.out.println("oauth2User.getAttributes() : " + oauth2User.getAttributes());
 
+        if(provider.equals("google")) {
 
             log.info("this user provider is {}", provider);
 
-            oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
+            oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes(), userRequest.getAccessToken().getTokenValue());
 
         } else if (provider.equals("naver")) {
 
@@ -81,25 +76,25 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
         String providerId = oAuth2UserInfo.getProviderId();
         String email = oAuth2UserInfo.getEmail();
         String userName = oAuth2UserInfo.getName();
-        String password = null;
-
-//        Role role = Role.ROLE_UNFINISHED_USER;
-        Role role = Role.ROLE_UNFINISHED_USER;
-
+        Role role;
         UUID id = UUID.randomUUID();
 
         Optional<User> user = userRepository.findByEmailAndProviderType(oAuth2UserInfo.getEmail(), provider);
+
         // 신규 회원가입
         if(user.isEmpty()) {
+
+            role = Role.ROLE_UNFINISHED_USER;
 
             User entity = User.builder()
                     .id(id)
                     .username(userName)
                     .email(email)
                     .role(role)
+                    .birthDate(oAuth2UserInfo.getBirthDate())
                     .providerType(provider)
                     .providerId(providerId)
-                    .password(password)
+                    .password(null)
                     .build();
 
             userRepository.save(entity);

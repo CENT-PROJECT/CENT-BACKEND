@@ -26,6 +26,13 @@ public class JoinController {
         return ResponseEntity.ok("회원가입 완료!");
     }
 
+    @PostMapping("/email/code")
+    public ResponseEntity<Boolean> checkVerifiedEmail(@RequestParam String email, @RequestParam String code) {
+
+        return ResponseEntity.ok(userService.checkVerifiedEmail(email, code));
+
+    }
+
     @PostMapping("/social")
     public ResponseEntity<String> socialJoin(@RequestBody UserRequestDto.SocialJoinRequestDto dto) {
         userService.oauth2Join(dto);

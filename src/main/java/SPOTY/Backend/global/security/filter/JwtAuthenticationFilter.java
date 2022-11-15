@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String[] whitelist = {"/", "/api/join", "/api/join/email", "/api/login"};
+    private static final String[] whitelist = {"/", "/api/join", "/api/join/email", "/api/login"}; // 동작 안함
 
     private final TokenService tokenService;
 
@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //whiteList 처리
         if (checkIsWhitelist(requestURI)) {
+            log.info("is whiteList request : {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
@@ -65,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // JWT 를 바탕으로 인증 객체 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-
+        System.out.println("authToken = " + authToken);
         // SecurityContextHolder 에 저장
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

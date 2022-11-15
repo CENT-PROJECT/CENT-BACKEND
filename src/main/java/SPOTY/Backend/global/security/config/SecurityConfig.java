@@ -40,16 +40,19 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
 
-                .authorizeRequests()
-//                .antMatchers("/api/join/mail").permitAll()
-//                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")// role 문제로 403, 일단 주석처리
-//                .antMatchers("/api/**").hasRole("ADMIN")// 테스트 시 path 관리할 것
+                .authorizeHttpRequests()
+                .antMatchers("/api/join/email").permitAll()
+                .antMatchers("/api/join/social").hasAuthority("UNVERIFIED_USER")// 소셜 유저 회원가입
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/token").permitAll()
+                .antMatchers("/api/home").hasAnyAuthority("USER", "ADMIN") // hasAnyRole(hasRole) 로 설정하면 prefix때문에 동작하지 않는다.
+                .antMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")// role 문제로 403, 일단 주석처리
+                .antMatchers("/api/**").hasAuthority("ADMIN")// 테스트 시 path 관리할 것
                 .anyRequest().permitAll()
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
-
 
                 .oauth2Login().permitAll()
 //                    .defaultSuccessUrl("/")

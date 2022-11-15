@@ -115,8 +115,7 @@ public class TokenService {
 
     public boolean isAdmin(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-//        if (role.equals(Role.ROLE_ADMIN.toString())) {
-        if (role.equals(Role.ADMIN)) {
+        if (role.equals(Role.ROLE_ADMIN.toString())) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();
@@ -124,8 +123,7 @@ public class TokenService {
 
     public boolean isUser(Map<String, Object> payload) {
         String role = payload.get("role").toString();
-//        if (role.equals(Role.ROLE_USER.toString())) {
-        if (role.equals(Role.USER)) {
+        if (role.equals(Role.ROLE_USER.toString())) {
             return Boolean.TRUE;
         }
         throw new ForbiddenUser();

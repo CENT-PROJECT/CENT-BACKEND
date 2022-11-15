@@ -51,15 +51,12 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         this.username = email;
     }
 
-    /**
-     * 이 아래 부분부터는 사용 하지 않을 예정.
-     * 추후 필요할 시 사용.
-     */
     @Override
     public String getPassword() {
         return null;
     }
 
+    // spring principalName 으로 사용
     @Override
     public String getUsername() {
         return username;
