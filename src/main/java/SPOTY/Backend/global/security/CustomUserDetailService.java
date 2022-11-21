@@ -48,30 +48,10 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
 
         OAuth2User oauth2User = super.loadUser(userRequest);
 
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2UserInfo oAuth2UserInfo = null;
-
         System.out.println("oauth2User.getAttributes() : " + oauth2User.getAttributes());
 
-        if(provider.equals("google")) {
-
-            log.info("this user provider is {}", provider);
-
-            oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes(), userRequest.getAccessToken().getTokenValue());
-
-        } else if (provider.equals("naver")) {
-
-            log.info("this user provider is {}", provider);
-
-            oAuth2UserInfo = new NaverUserInfo(oauth2User.getAttribute("response"));
-
-        } else if (provider.equals("kakao")) {
-
-            log.info("this user provider is {}", provider);
-
-            oAuth2UserInfo = new KakaoUserInfo(oauth2User.getAttributes());
-
-        }
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2UserInfo oAuth2UserInfo = of(oauth2User, provider, userRequest.getAccessToken().getTokenValue());
 
         String providerId = oAuth2UserInfo.getProviderId();
         String email = oAuth2UserInfo.getEmail();
@@ -107,5 +87,27 @@ public class CustomUserDetailService extends DefaultOAuth2UserService implements
 
         // authentication 객체에 넣어준다.
         return new CustomUserDetails(id, email, role.toString(), oauth2User.getAttributes());
+    }
+
+    private OAuth2UserInfo of(OAuth2User oauth2User, String provider, String accessToken) {
+
+        OAuth2UserInfo result = null;
+
+        log.info("this user provider is {}", provider);
+
+        if(provider.equals("google")) {
+
+            result = new GoogleUserInfo(oauth2User.getAttributes(), accessToken);
+
+        } else if (provider.equals("naver")) {
+
+            result = new NaverUserInfo(oauth2User.getAttribute("response"));
+
+        } else if (provider.equals("kakao")) {
+
+            result = new KakaoUserInfo(oauth2User.getAttributes());
+
+        }
+        return result;
     }
 }
