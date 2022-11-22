@@ -55,6 +55,7 @@ public class TokenService {
                 .claim("id", dto.getUserId())
                 .claim("email", dto.getEmail())
                 .claim("role", dto.getRole())
+                .claim("provider", dto.getProvider())
                 .signWith(ALGORITHM, SECRET_KEY);
     }
 
@@ -102,7 +103,7 @@ public class TokenService {
     }
 
     // Request의 Header에서 token 값을 가져옵니다.
-    // "Authorization" : <Bearer> "TOKEN'
+    // "Authorization" : <Bearer> "TOKEN"
     public String getToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         try {

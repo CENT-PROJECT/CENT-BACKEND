@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 public class UserRequestDto {
 
     @Getter
@@ -41,5 +43,23 @@ public class UserRequestDto {
         public void setPassword(String password) {
             this.password = password;
         }
+    }
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SocialJoinRequestDto {
+
+        private UUID id;
+
+        private String email;
+
+        private String nickname;
+
+        private String state;
+
+        private String city;
+
+        private String preferredPosition;
+
     }
 }

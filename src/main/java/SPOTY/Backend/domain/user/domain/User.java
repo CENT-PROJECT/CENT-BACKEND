@@ -56,6 +56,11 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String providerType;
+
+    private String providerId;
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -70,6 +75,15 @@ public class User extends BaseTimeEntity {
         this.preferredPosition = dto.getPreferredPosition();
         this.isExpert = dto.getIsExpert();
         this.birthDate = dto.getBirthDate();
+    }
+
+    public User(UserRequestDto.SocialJoinRequestDto dto) {
+        this.id = dto.getId();
+        this.email = dto.getEmail();
+        this.nickname = dto.getNickname();
+        this.state = dto.getState();
+        this.city = dto.getCity();
+        this.preferredPosition = dto.getPreferredPosition();
     }
 }
 
